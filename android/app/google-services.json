@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "258803022548",
+    "project_id": "farmlynco-23d24",
+    "storage_bucket": "farmlynco-23d24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:258803022548:android:71861a434cd339aa7b5941",
+        "android_client_info": {
+          "package_name": "com.farmlynco.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEpmiaiu7gPdK0XPIt6upEP9_KQPc70K0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
