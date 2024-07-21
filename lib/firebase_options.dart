@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -49,20 +46,30 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCC05gduJ1JC-1D7V_DMFV8y4E5kDAit00',
+    appId: '1:1060696718130:web:072d623ed8e2130c26f52b',
+    messagingSenderId: '1060696718130',
+    projectId: 'all-in-agri',
+    authDomain: 'all-in-agri.firebaseapp.com',
+    storageBucket: 'all-in-agri.appspot.com',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDEpmiaiu7gPdK0XPIt6upEP9_KQPc70K0',
-    appId: '1:258803022548:android:71861a434cd339aa7b5941',
-    messagingSenderId: '258803022548',
-    projectId: 'farmlynco-23d24',
-    storageBucket: 'farmlynco-23d24.appspot.com',
+    apiKey: 'AIzaSyCskTPMKHMATcjJ5OXh4j_kLa-pNrxoaBo',
+    appId: '1:1060696718130:android:6cf4e0cec48337e126f52b',
+    messagingSenderId: '1060696718130',
+    projectId: 'all-in-agri',
+    storageBucket: 'all-in-agri.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB9Fx2akKJzUKX_WFMQgJDTDIpQoXkopl8',
-    appId: '1:258803022548:ios:5dbad421ab6f4cd97b5941',
-    messagingSenderId: '258803022548',
-    projectId: 'farmlynco-23d24',
-    storageBucket: 'farmlynco-23d24.appspot.com',
-    iosBundleId: 'com.example.farmlynco',
+    apiKey: 'AIzaSyAMaFUo_xMj3ASry0gRUBquKo2Il-qCFUY',
+    appId: '1:1060696718130:ios:c00c13330d358d0226f52b',
+    messagingSenderId: '1060696718130',
+    projectId: 'all-in-agri',
+    storageBucket: 'all-in-agri.appspot.com',
+    iosBundleId: 'com.example.allinagri',
   );
+
 }

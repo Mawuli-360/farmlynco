@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmlynco/core/constant/app_images.dart';
+import 'package:farmlynco/route/navigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -80,19 +81,17 @@ class SplashScreenState extends State<SplashScreen>
           final userData = userSnapshot.data() as Map<String, dynamic>;
           String role = userData['role'];
           if (role == 'Farmer') {
-            // return Navigation.farmerMainScreen;
+            return Navigation.farmerMainScreen;
           } else if (role == 'Buyer') {
-            // return Navigation.buyerLandingScreen;
+            return Navigation.buyerLandingScreen;
           }
         }
       }
       // If the user is not authenticated or their role is not found, return the login screen
-      // return Navigation.loginScreen;
-      return "null";
+      return Navigation.loginScreen;
     } catch (e) {
       // print('Error: $e');
-      return "null";
-      // return Navigation.loginScreen;
+      return Navigation.loginScreen;
     }
   }
 
