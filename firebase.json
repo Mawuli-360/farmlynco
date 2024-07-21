@@ -1,1 +1,22 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"all-in-agri","appId":"1:1060696718130:android:e23ddab90b308f3326f52b","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"all-in-agri","configurations":{"android":"1:1060696718130:android:e23ddab90b308f3326f52b","ios":"1:1060696718130:ios:6efd8eff408ec3c626f52b"}}}}}}
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "all-in-agri",
+                    "appId": "1:1060696718130:android:e23ddab90b308f3326f52b",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "all-in-agri",
+                    "configurations": {
+                        "android": "1:1060696718130:android:e23ddab90b308f3326f52b",
+                        "ios": "1:1060696718130:ios:6efd8eff408ec3c626f52b"
+                    }
+                }
+            }
+        }
+    }
+}
