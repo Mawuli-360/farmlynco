@@ -68,7 +68,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                       itemBuilder: (_, index) => ProductCard(
                         product: data[index],
                       ),
-                      itemCount: 10,
+                      itemCount: data.length,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                     );
