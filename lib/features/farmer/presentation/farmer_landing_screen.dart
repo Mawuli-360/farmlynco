@@ -1,10 +1,9 @@
-
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_home_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_iot_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_marketplace.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_weather_screen.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

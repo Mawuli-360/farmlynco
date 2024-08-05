@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomText extends StatelessWidget {
-  const CustomText({
+  const CustomText( {
     super.key,
     required this.body,
     this.fontSize = 18,

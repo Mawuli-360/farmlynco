@@ -1,9 +1,8 @@
-
 import 'package:farmlynco/features/farmer/presentation/crop_doctor/provider/crop_diagnosis_provider.dart';
-import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'dart:io';
 import 'package:flutter_markdown/flutter_markdown.dart';
 

@@ -23,7 +23,7 @@ class SettingCustomTile extends ConsumerWidget {
         for (var settingOption in settingOption) _buildTile(settingOption),
         70.verticalSpace,
         _buildLastTile(
-            lastTile, () => ref.read(authRepositoryProvider).signOut()),
+            lastTile, () => ref.read(authRepositoryProvider).signOut(context)),
       ],
     );
   }

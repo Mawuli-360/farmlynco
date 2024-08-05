@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/farmer/presentation/crop_doctor/diagnosis_history.dart';
@@ -51,6 +53,7 @@ class FarmerCropDoctor extends ConsumerWidget {
         );
       },
     );
+    
 
     if (image != null) {
       try {

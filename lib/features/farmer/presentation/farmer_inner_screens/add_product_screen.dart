@@ -1,14 +1,12 @@
-
+import 'package:farmlynco/route/navigation.dart';
+import 'package:farmlynco/shared/common_widgets/primary_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:farmlynco/core/constant/app_colors.dart';
-import 'package:farmlynco/route/navigation.dart';
-import 'package:farmlynco/shared/common_widgets/custom_text.dart';
-import 'package:farmlynco/shared/common_widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:farmlynco/core/constant/app_colors.dart';
+import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 
 class AddProductScreen extends ConsumerStatefulWidget {
   const AddProductScreen({super.key});

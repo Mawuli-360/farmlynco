@@ -1,4 +1,3 @@
-
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/authentication/data/auth_repository.dart';
@@ -148,6 +147,7 @@ class _LoginSectionState extends ConsumerState<_LoginSection> {
 
                           ref
                               .read(authRepositoryProvider)
+                              // .handleAuthentication(role, context);
                               .signInWithEmailAndPassword(
                                   email: emailController.text,
                                   password: passwordController.text);

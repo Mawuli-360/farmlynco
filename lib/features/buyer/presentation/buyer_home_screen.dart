@@ -1,10 +1,14 @@
-
 import 'package:farmlynco/core/constant/app_colors.dart';
+import 'package:farmlynco/features/buyer/application/provider/products_provider.dart';
+import 'package:farmlynco/features/buyer/presentation/inner_screens/seller_screen.dart';
 import 'package:farmlynco/features/buyer/presentation/widgets/custom_sliver_appbar.dart';
 import 'package:farmlynco/features/buyer/presentation/widgets/horizontal_scroll_product_with_title.dart';
+import 'package:farmlynco/features/buyer/presentation/widgets/seller_card.dart';
+import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/shared/common_widgets/news_carousel.dart';
 import 'package:farmlynco/shared/common_widgets/tip_of_the_day_card.dart';
+import 'package:farmlynco/util/custom_loading_scale.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,16 +57,16 @@ class BuyerHomeContent extends StatelessWidget {
                   tip:
                       "Noticed something isn't quite right? Report the issue through our feedback form so we can look into it. Thank you 🙂"),
               15.verticalSpace,
-              // const CustomText(
-              //   body: "Best Sellers",
-              //   fontSize: 18,
-              //   fontWeight: FontWeight.w500,
-              //   color: AppColors.headerTitleColor,
-              //   bottom: 10,
-              //   left: 15,
-              //   top: 10,
-              // ),
-              // const _SellerAppreciationSection(),
+              const CustomText(
+                body: "Best Sellers",
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: AppColors.headerTitleColor,
+                bottom: 10,
+                left: 15,
+                top: 10,
+              ),
+              const _SellerAppreciationSection(),
               35.verticalSpace,
             ],
           ),
@@ -72,21 +76,37 @@ class BuyerHomeContent extends StatelessWidget {
   }
 }
 
-// class _SellerAppreciationSection extends ConsumerWidget {
-//   const _SellerAppreciationSection();
+class _SellerAppreciationSection extends ConsumerWidget {
+  const _SellerAppreciationSection();
 
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return SizedBox(
-//       height: 180.h,
-//       child: ListView.builder(
-//         scrollDirection: Axis.horizontal,
-//         itemCount: 5,
-//         padding: EdgeInsets.only(left: 15.r),
-//         itemBuilder: (context, index) => GestureDetector(
-//             onTap: () => Navigation.openSellerScreen(),
-//             child: const SellerCard()),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sellers = ref.watch(fetchSomeUserProvider);
+
+    return sellers.when(
+      data: (data) {
+        return SizedBox(
+          height: 180.h,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.only(left: 15.r),
+            itemCount: 3,
+            itemBuilder: (context, index) {
+              final user = data[index];
+              return GestureDetector(
+                onTap: () => Navigation.navigatePush(SellerScreen(user)),
+                child: SellerCard(
+                  user: user,
+                ),
+              );
+            },
+          ),
+        );
+      },
+      error: (error, st) => Text(error.toString()),
+      loading: () => const Center(
+        child: CustomLoadingScale(),
+      ),
+    );
+  }
+}

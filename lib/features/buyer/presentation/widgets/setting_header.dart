@@ -1,16 +1,19 @@
 import 'package:farmlynco/core/constant/app_colors.dart';
+import 'package:farmlynco/shared/common_widgets/common_provider/user_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class SettingHeader extends StatelessWidget {
+class SettingHeader extends ConsumerWidget {
   const SettingHeader({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userDetailsProvider);
     return Container(
       height: 0.29.sh,
       width: double.infinity,
@@ -37,23 +40,11 @@ class SettingHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CustomText(
-                  body: "Mawuli Zigah",
+                CustomText(
+                  body: user?.name ?? "user",
                   fontSize: 19,
                   fontWeight: FontWeight.w600,
                   color: AppColors.primaryColor,
-                ),
-                4.verticalSpace,
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_city_outlined,
-                      size: 22.h,
-                      color: AppColors.primaryColor,
-                    ),
-                    4.horizontalSpace,
-                    const CustomText(body: "Borteyman, Ghana", fontSize: 16),
-                  ],
                 ),
               ],
             ),
@@ -73,10 +64,11 @@ class SettingHeader extends StatelessWidget {
                         offset: Offset(2.h, 2.h)),
                   ],
                   shape: BoxShape.circle,
-                  image: const DecorationImage(
+                  image: DecorationImage(
                       fit: BoxFit.cover,
                       image: CachedNetworkImageProvider(
-                        "https://www.thespruce.com/thmb/fghCcR0Sv_lrSIg1mVWS9U-b_ts=/4002x0/filters:no_upscale():max_bytes(150000):strip_icc()/how-to-grow-watermelons-1403491-hero-2d1ce0752fed4ed599db3ba3b231f8b7.jpg",
+                        user?.imageUrl ??
+                            "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1200px-User-avatar.svg.png",
                       ))),
             ),
           )

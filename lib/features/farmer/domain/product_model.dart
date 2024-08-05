@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductModel {
+  // final String category;
   final String description;
   final String name;
   final String price;
@@ -13,35 +14,41 @@ class ProductModel {
 
   final String userId;
   final String userPhoneNumber;
-  ProductModel({
-    required this.description,
-    required this.name,
-    required this.price,
-    required this.productId,
-    required this.productImage,
-    required this.productOwner,
-    required this.profilePic,
-    required this.userId,
-    required this.userPhoneNumber,
-  });
+  bool isBookmarked;
+
+  ProductModel(
+      {
+        // required this.category,
+      required this.description,
+      required this.name,
+      required this.price,
+      required this.productId,
+      required this.productImage,
+      required this.productOwner,
+      required this.profilePic,
+      required this.userId,
+      required this.userPhoneNumber,
+      this.isBookmarked = false});
 
   factory ProductModel.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
     return ProductModel.fromMap(data);
   }
 
-  ProductModel copyWith({
-    String? description,
-    String? name,
-    String? price,
-    String? productId,
-    String? productImage,
-    String? productOwner,
-    String? profilePic,
-    String? userId,
-    String? userPhoneNumber,
-  }) {
+  ProductModel copyWith(
+      {String? category,
+      String? description,
+      String? name,
+      String? price,
+      String? productId,
+      String? productImage,
+      String? productOwner,
+      String? profilePic,
+      String? userId,
+      String? userPhoneNumber,
+      required bool isBookmarked}) {
     return ProductModel(
+      // category: category ?? this.description,
       description: description ?? this.description,
       name: name ?? this.name,
       price: price ?? this.price,

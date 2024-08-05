@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:farmlynco/core/constant/app_colors.dart';
-import 'package:farmlynco/shared/common_widgets/custom_text.dart';
-import 'package:farmlynco/shared/common_widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:farmlynco/core/constant/app_colors.dart';
+import 'package:farmlynco/shared/common_widgets/custom_text.dart';
+import 'package:farmlynco/shared/common_widgets/primary_button.dart';
 
 class StoreSetup extends ConsumerStatefulWidget {
   const StoreSetup({super.key});
@@ -39,7 +39,7 @@ class _StoreSetupState extends ConsumerState<StoreSetup> {
     StoreSetupData(
       title: "Verify your identity",
       cardText:
-          "Select one means of identification. Allinagri will verify you as a vendor this way.",
+          "Select one means of identification. farmlynco will verify you as a vendor this way.",
       body: const VerifyIdentityBody(),
     ),
     StoreSetupData(

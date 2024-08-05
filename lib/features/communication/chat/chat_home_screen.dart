@@ -1,12 +1,11 @@
-
 import 'package:farmlynco/features/communication/chat/chat_page.dart';
-import 'package:farmlynco/features/communication/chat/chat_service.dart';
 import 'package:farmlynco/route/navigation.dart';
-import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
-import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:farmlynco/features/communication/chat/chat_service.dart';
+import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
+import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 
 class ChatHomeScreen extends ConsumerWidget {
   ChatHomeScreen({super.key});
@@ -22,8 +21,8 @@ class ChatHomeScreen extends ConsumerWidget {
   }
 
   Widget _buildUserList() {
-    return StreamBuilder(
-        stream: chatService.getUserStream(),
+    return StreamBuilder<List<Map<String, dynamic>>>(
+        stream: chatService.getChatRoomsForCurrentUser(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const CustomText(body: "Error...");
@@ -35,29 +34,27 @@ class ChatHomeScreen extends ConsumerWidget {
 
           return ListView(
             children: snapshot.data!
-                .map<Widget>(
-                    (userData) => _buildUserListItem(userData, context))
+                .map<Widget>((chatRoomData) =>
+                    _buildChatRoomListItem(chatRoomData, context))
                 .toList(),
           );
         });
   }
 
-  Widget _buildUserListItem(
-      Map<String, dynamic> userData, BuildContext context) {
-    if (userData['email'] != chatService.getCurrentUser()!.email) {
-      return UserTile(
-        text: userData['email'],
-        onTap: () {
-          Navigation.navigatePush(ChatPage(
-            receiverEmail: userData['email'],
-            receiverID: userData['uid'],
-          ));
-        },
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
-  }
+Widget _buildChatRoomListItem(Map<String, dynamic> chatRoomData, BuildContext context) {
+  return UserTile(
+    text: chatRoomData['otherUserName'] ?? chatRoomData['otherUserEmail'],
+    lastMessage: chatRoomData['lastMessage'],
+    lastMessageTime: chatRoomData['lastMessageTime']?.toDate(),
+    isOnline: chatRoomData['isOnline'],
+    onTap: () {
+      Navigation.navigatePush(ChatPage(
+        chatRoomID: chatRoomData['chatRoomId'],
+        receiverEmail: chatRoomData['otherUserEmail'],
+      ));
+    },
+  );
+}
 }
 
 class UserTile extends ConsumerWidget {
@@ -65,19 +62,60 @@ class UserTile extends ConsumerWidget {
     super.key,
     required this.text,
     required this.onTap,
+    this.lastMessage,
+    this.lastMessageTime,
+    this.isOnline,
   });
 
   final String text;
   final void Function()? onTap;
+  final String? lastMessage;
+  final DateTime? lastMessageTime;
+  final bool? isOnline;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: onTap,
       child: ListTile(
-        leading: const Icon(Icons.person),
+        leading: Stack(
+          children: [
+            const Icon(Icons.person),
+            if (isOnline == true)
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                ),
+              ),
+          ],
+        ),
         title: CustomText(body: text),
+        subtitle: lastMessage != null 
+          ? CustomText(body: lastMessage!, fontSize: 12) 
+          : null,
+        trailing: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (lastMessageTime != null)
+              CustomText(body: _formatDate(lastMessageTime!), fontSize: 10),
+            if (isOnline == false && lastMessageTime != null)
+              CustomText(body: 'Last seen: ${_formatDate(lastMessageTime!)}', fontSize: 10),
+          ],
+        ),
       ),
     );
+  }
+
+  String _formatDate(DateTime date) {
+    // Implement your date formatting logic here
+    return '${date.hour}:${date.minute}';
   }
 }

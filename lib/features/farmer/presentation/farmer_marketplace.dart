@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_inner_screens/farm_edit_screen.dart';
@@ -10,6 +9,7 @@ import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/util/loading_overlay.dart';
 import 'package:farmlynco/util/show_toast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,7 +110,7 @@ class _FarmerMarketPlaceState extends ConsumerState<FarmerMarketPlace> {
                     ],
                   ),
                 ),
-                20.verticalSpace,
+                30.verticalSpace,
                 fetchProduct.when(
                   data: (data) {
                     if (data.isEmpty) {
@@ -124,29 +124,30 @@ class _FarmerMarketPlaceState extends ConsumerState<FarmerMarketPlace> {
                       );
                     }
                     return Expanded(
-                        child: GridView.builder(
-                            itemCount: data.length,
-                            physics: const BouncingScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 1,
-                              mainAxisSpacing: screenWidth * 0.02,
-                              childAspectRatio: screenWidth < 600 ? 0.95 : 0.6,
-                            ),
-                            itemBuilder: (context, index) {
-                              return ResponsiveGridViewItem(
-                                  imageUrl: data[index].productImage,
-                                  name: data[index].name,
-                                  price: double.parse(data[index].price),
-                                  onEdit: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => FarmEditScreen(
-                                              product: data[index]))),
-                                  onDelete: () =>
-                                      deleteProduct(data[index].productId));
-                            }));
+                      child: GridView.builder(
+                          itemCount: data.length,
+                          physics: const BouncingScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 15,
+                            mainAxisSpacing: screenWidth * 0.02,
+                            childAspectRatio: screenWidth < 600 ? 0.95 : 0.6,
+                          ),
+                          itemBuilder: (context, index) {
+                            return ResponsiveGridViewItem(
+                                imageUrl: data[index].productImage,
+                                name: data[index].name,
+                                price: double.parse(data[index].price),
+                                onEdit: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => FarmEditScreen(
+                                            product: data[index]))),
+                                onDelete: () =>
+                                    deleteProduct(data[index].productId));
+                          }),
+                    );
                   },
                   loading: () => Center(
                       child: SizedBox(

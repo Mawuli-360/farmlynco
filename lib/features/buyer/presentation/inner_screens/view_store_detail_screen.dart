@@ -1,14 +1,16 @@
+import 'package:farmlynco/features/buyer/application/provider/favorite_provider.dart';
 import 'package:farmlynco/features/buyer/application/provider/products_provider.dart';
-import 'package:farmlynco/features/buyer/presentation/inner_screens/product_detail_screen.dart';
 import 'package:farmlynco/features/farmer/domain/product_model.dart';
 import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/shared/common_widgets/product_card.dart';
+import 'package:farmlynco/util/show_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:farmlynco/core/constant/app_colors.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class ViewStoreDetailScreen extends ConsumerStatefulWidget {
   const ViewStoreDetailScreen(this.product, {super.key});
@@ -31,7 +33,7 @@ class _ViewStoreDetailScreenState extends ConsumerState<ViewStoreDetailScreen> {
         child: Column(
           children: [
             _ViewStoreHeader(widget.product.profilePic),
-            _ViewStoreContent(choices: choices),
+            _ViewStoreContent(productModel: widget.product,choices: choices),
           ],
         ),
       ),
@@ -40,15 +42,17 @@ class _ViewStoreDetailScreenState extends ConsumerState<ViewStoreDetailScreen> {
 }
 
 class _ViewStoreContent extends ConsumerWidget {
-  const _ViewStoreContent({
+  const _ViewStoreContent({ required this.productModel, 
     required this.choices,
   });
 
   final List<String> choices;
+  final ProductModel productModel;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productList = ref.watch(fetchAllProductProvider);
+    final productList = ref.watch(fetchProductForBuyersProvider(productModel.userId));
+    final bookmarkedItems = ref.watch(favoriteProvider);
 
     return Expanded(
       child: SizedBox(
@@ -161,29 +165,6 @@ class _ViewStoreContent extends ConsumerWidget {
                   fontWeight: FontWeight.w500,
                   color: AppColors.headerTitleColor,
                 ),
-                // SizedBox(
-                //   height: 44.h,
-                //   child: ListView.separated(
-                //     physics: const BouncingScrollPhysics(),
-                //     scrollDirection: Axis.horizontal,
-                //     separatorBuilder: (context, index) => 10.horizontalSpace,
-                //     itemCount: choices.length,
-                //     itemBuilder: (context, index) => ChoiceChip(
-                //         labelStyle: const TextStyle(
-                //             color: Colors.black, fontWeight: FontWeight.bold),
-                //         color: WidgetStateProperty.all(
-                //             const Color.fromARGB(152, 224, 242, 241)),
-                //         shape: const StadiumBorder(
-                //             side: BorderSide(color: AppColors.green)),
-                //         showCheckmark: true,
-                //         label: CustomText(
-                //           body: choices[index],
-                //           fontSize: 14,
-                //         ),
-                //         selected: true),
-                //   ),
-                // ),
-
                 18.verticalSpace,
                 productList.when(
                     data: (data) {
@@ -193,14 +174,33 @@ class _ViewStoreContent extends ConsumerWidget {
                           childAspectRatio: 0.85.h,
                           crossAxisCount: 2,
                         ),
-                        itemBuilder: (_, index) => ProductCard(
-                          onTap: () =>
-                              Navigation.navigatePush(ProductDetailScreen(
-                            isViewStore: false,
-                            product: data[index],
-                          )),
-                          product: data[index],
-                        ),
+                        itemBuilder: (_, index) {
+                          final product = data[index];
+                          final isBookmarked = bookmarkedItems.any(
+                              (item) => item.productId == product.productId);
+                          return AnimationConfiguration.staggeredGrid(
+                              position: index,
+                              columnCount: 2,
+                              duration: const Duration(milliseconds: 700),
+                              child: ScaleAnimation(
+                                child: FadeInAnimation(
+                                  child: ProductCard(
+                                    product: data[index],
+                                    isBookmarked: isBookmarked,
+                                    onPressed: () {
+                                      ref
+                                          .read(favoriteProvider.notifier)
+                                          .toggleBookmark(data[index]);
+                                      isBookmarked
+                                          ? showToast(
+                                              "Product:${product.name} remove from bookmark")
+                                          : showToast(
+                                              "Product:${product.name} added to bookmark");
+                                    },
+                                  ),
+                                ),
+                              ));
+                        },
                         itemCount: data.length,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),

@@ -1,7 +1,6 @@
-
-import 'package:bubble/bubble.dart';
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/features/farmer/domain/chat_domain/message_model.dart';
+import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart'; 

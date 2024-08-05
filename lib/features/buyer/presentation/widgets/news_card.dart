@@ -23,7 +23,10 @@ class NewsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final document = parse(content);
-    final String plainText = parse(document.body!.text).documentElement!.text;
+    final paragraphs = document.getElementsByTagName('p');
+    final String plainText = paragraphs.isNotEmpty
+        ? paragraphs.map((element) => element.text).join(' ')
+        : '';
     return GestureDetector(
       onTap: () => Navigation.navigatePush(
           ReadDetailScreen(image: image, content: content)),

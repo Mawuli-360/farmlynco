@@ -1,11 +1,15 @@
-
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:farmlynco/features/buyer/presentation/inner_screens/read_detail_screen.dart';
+import 'package:farmlynco/features/farmer/presentation/farmers_providers/fetch_diseases_provider.dart';
 import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
+import 'package:farmlynco/util/custom_loading_scale.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:html/parser.dart';
 
-class TopPickCard extends StatelessWidget {
+class TopPickCard extends ConsumerWidget {
   const TopPickCard({
     super.key,
     required this.pageController,
@@ -16,21 +20,35 @@ class TopPickCard extends StatelessWidget {
   final double pageOffset;
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300.h,
-      child: PageView.builder(
-          itemCount: 3,
-          controller: pageController,
-          itemBuilder: (context, i) {
-            return parallaxCard(i);
-          }),
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final commonDisease = ref.watch(fetchCommonDiseasesDetailProvider);
+
+    return commonDisease.when(
+        data: (data) {
+          return SizedBox(
+            height: 300.h,
+            child: PageView.builder(
+                itemCount: 3,
+                controller: pageController,
+                itemBuilder: (context, i) {
+                  return parallaxCard(i, data[i].content, data[i].image);
+                }),
+          );
+        },
+        loading: () => const CustomLoadingScale(),
+        error: (error, stacktrace) =>
+            Center(child: CustomText(body: error.toString())));
   }
 
-  Widget parallaxCard(int i) {
+  Widget parallaxCard(int i, String body, String image) {
+    final document = parse(body);
+    final paragraphs = document.getElementsByTagName('p');
+    final String plainText = paragraphs.isNotEmpty
+        ? paragraphs.map((element) => element.text).join(' ')
+        : '';
     return GestureDetector(
-      onTap: () => Navigation.openReadDetailScreen(),
+      onTap: () => Navigation.navigatePush(
+          ReadDetailScreen(image: image, content: body)),
       child: Transform.scale(
         scale: 0.98,
         child: Container(
@@ -58,8 +76,7 @@ class TopPickCard extends StatelessWidget {
                       fit: BoxFit.cover,
                       alignment: Alignment(-pageOffset.abs() + i, 0),
                       height: 280.h,
-                      imageUrl:
-                          "https://www.thespruce.com/thmb/fghCcR0Sv_lrSIg1mVWS9U-b_ts=/4002x0/filters:no_upscale():max_bytes(150000):strip_icc()/how-to-grow-watermelons-1403491-hero-2d1ce0752fed4ed599db3ba3b231f8b7.jpg",
+                      imageUrl: image,
                     ),
                   ),
                 ),
@@ -72,9 +89,8 @@ class TopPickCard extends StatelessWidget {
                   padding: EdgeInsets.all(5.h),
                   margin: EdgeInsets.symmetric(horizontal: 3.h),
                   color: const Color.fromARGB(162, 255, 255, 255),
-                  child: const CustomText(
-                    body:
-                        "Paintings is the most lucrative way of doing things and in agriculture it serves a really great work of supplying",
+                  child: CustomText(
+                    body: plainText,
                     fontSize: 16,
                     maxLines: 3,
                     textOverflow: TextOverflow.ellipsis,

@@ -1,14 +1,17 @@
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/route/navigation.dart';
+import 'package:farmlynco/shared/common_widgets/common_provider/user_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomSliverAppBar extends StatelessWidget {
+class CustomSliverAppBar extends ConsumerWidget {
   const CustomSliverAppBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userDetailsProvider);
     return SliverAppBar(
       backgroundColor: AppColors.white,
       surfaceTintColor: AppColors.appBgColor,
@@ -35,11 +38,12 @@ class CustomSliverAppBar extends StatelessWidget {
                     50.verticalSpace,
                     Padding(
                       padding: EdgeInsets.only(left: 12.h),
-                      child: const CustomText(
-                        body: "Good afternoon, Mawuli",
+                      child: CustomText(
+                        body:
+                            "Good afternoon, ${user?.name.split(' ')[0] ?? "User"}",
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
-                        color: Color.fromARGB(255, 26, 98, 86),
+                        color: const Color.fromARGB(255, 26, 98, 86),
                       ),
                     ),
                     4.verticalSpace,

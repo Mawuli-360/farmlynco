@@ -1,4 +1,3 @@
-
 import 'package:farmlynco/features/authentication/presentation/buyer_registration_screen.dart';
 import 'package:farmlynco/features/authentication/presentation/farmer_registration_screen.dart';
 import 'package:farmlynco/features/authentication/presentation/login_screen.dart';
@@ -16,7 +15,6 @@ import 'package:farmlynco/features/buyer/presentation/inner_screens/language_scr
 import 'package:farmlynco/features/buyer/presentation/inner_screens/news_bookmarks_screen.dart';
 import 'package:farmlynco/features/buyer/presentation/inner_screens/news_screen.dart';
 import 'package:farmlynco/features/buyer/presentation/inner_screens/products_screen.dart';
-import 'package:farmlynco/features/buyer/presentation/inner_screens/seller_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/chat_ai/ai_assistant_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/crop_doctor/farmer_crop_doctor.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_home_screen.dart';
@@ -129,9 +127,7 @@ class Navigation {
       case productsScreen:
         return openRoute(widget: const ProductsScreen());
       // case viewStoreScreen:
-      //   return openRoute(widget: const ViewStoreDetailScreen());
-      case sellerScreen:
-        return openRoute(widget: const SellerScreen());
+      //   return openRoute(widget: const ViewStoreDetail
       case aboutUs:
         return openRoute(widget: const AboutUsScreen());
       case editProfileScreen:

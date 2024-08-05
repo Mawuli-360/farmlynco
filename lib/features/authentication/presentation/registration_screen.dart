@@ -3,9 +3,9 @@ import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/authentication/presentation/controller/auth_controller.dart';
 import 'package:farmlynco/features/authentication/presentation/widgets/wave_background_images.dart';
 import 'package:farmlynco/route/navigation.dart';
+import 'package:farmlynco/shared/data/authentication/auth_screen_data.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/shared/common_widgets/primary_button.dart';
-import 'package:farmlynco/shared/data/authentication/auth_screen_data.dart';
 import 'package:farmlynco/util/show_exit_dialog.dart';
 import 'package:flutter/material.dart';
 

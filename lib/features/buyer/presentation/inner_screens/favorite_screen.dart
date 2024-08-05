@@ -1,5 +1,8 @@
 import 'package:farmlynco/core/constant/app_colors.dart';
+import 'package:farmlynco/features/buyer/application/provider/favorite_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
+import 'package:farmlynco/shared/common_widgets/product_card.dart';
+import 'package:farmlynco/util/show_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,13 +16,14 @@ class FavoriteScreen extends ConsumerStatefulWidget {
 }
 
 class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
-  final bool isFavouriteListEmpty = true;
   @override
   Widget build(BuildContext context) {
+    final favoriteList = ref.watch(favoriteProvider);
+
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
-        child: isFavouriteListEmpty
+        child: favoriteList.isEmpty
             ? const _EmptyFavoriteContent()
             : const FavoriteContent(),
       ),
@@ -27,13 +31,14 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
   }
 }
 
-class FavoriteContent extends StatelessWidget {
+class FavoriteContent extends ConsumerWidget {
   const FavoriteContent({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favoriteList = ref.watch(favoriteProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -52,11 +57,28 @@ class FavoriteContent extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 30.h, left: 8.h, right: 8.h),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               mainAxisSpacing: 20.h,
-              childAspectRatio: 0.83,
+              childAspectRatio: 0.85,
               crossAxisCount: 2,
             ),
-            itemBuilder: (_, index) => Container(),
-            itemCount: 10,
+            itemBuilder: (_, index) {
+              final isBookmarked = favoriteList.any(
+                  (item) => item.productId == favoriteList[index].productId);
+              return ProductCard(
+                product: favoriteList[index],
+                isBookmarked: isBookmarked,
+                onPressed: () {
+                  ref
+                      .read(favoriteProvider.notifier)
+                      .toggleBookmark(favoriteList[index]);
+                  isBookmarked
+                      ? showToast(
+                          "${favoriteList[index].name} remove from favorite 💓")
+                      : showToast(
+                          "${favoriteList[index].name} added to favorite 💓");
+                },
+              );
+            },
+            itemCount: favoriteList.length,
             shrinkWrap: true,
           ),
         ),

@@ -1,8 +1,8 @@
-
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/farmer_weather_card.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/section_with_horizontal_tile.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/tip_section.dart';
+import 'package:farmlynco/features/farmer/presentation/farmers_providers/fetch_diseases_provider.dart';
 import 'package:farmlynco/main.dart';
 import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/shared/common_widgets/common_provider/news_provider.dart';
@@ -12,7 +12,6 @@ import 'package:farmlynco/shared/common_widgets/header_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:html/parser.dart' show parse;
 
 class FarmerHomeScreen extends ConsumerWidget {
   const FarmerHomeScreen({super.key});
@@ -21,6 +20,7 @@ class FarmerHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userDetailsProvider);
     final fetchNews = ref.watch(fetchNewsDetailProvider);
+    final diseases = ref.watch(fetchDiseasesDetailProvider);
 
     return Scaffold(
       body: CustomScrollView(
@@ -77,13 +77,6 @@ class FarmerHomeScreen extends ConsumerWidget {
             delegate: SliverChildListDelegate(
               [
                 14.verticalSpace,
-
-                // SectionWithHorizontalScrollCard(
-                //   sectionName: 'Top News',
-                //   onPressed: () => Navigation.openNewsScreen(),
-                //   content: '',
-                //   image: '',
-                // ),
                 HeaderTitle(
                   title: "Top News",
                   onPressed: () => Navigation.openNewsScreen(),
@@ -113,25 +106,19 @@ class FarmerHomeScreen extends ConsumerWidget {
                   title: "Trending Disease",
                   onPressed: () => Navigation.openFarmerDiseaseScreen(),
                 ),
-                fetchNews.when(
+                diseases.when(
                     data: (data) {
                       return SizedBox(
                         height: 230.h,
                         child: ListView.builder(
                             padding: EdgeInsets.symmetric(vertical: 4.h),
-                            itemCount: data.length,
+                            itemCount: 3,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
                               final image = data[index].image;
                               final content = data[index].content;
-                              final document = parse(content);
-                              final String plainText =
-                                  parse(document.body!.text)
-                                      .documentElement!
-                                      .text;
 
-                              return FarmerCard(
-                                  image: image, content: plainText);
+                              return FarmerCard(image: image, content: content);
                             }),
                       );
                     },

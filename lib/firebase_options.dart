@@ -3,7 +3,6 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -47,8 +46,8 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static FirebaseOptions web = FirebaseOptions(
-    apiKey: dotenv.env['GOOGLE_API_KEY2'] ?? '',
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCC05gduJ1JC-1D7V_DMFV8y4E5kDAit00',
     appId: '1:1060696718130:web:072d623ed8e2130c26f52b',
     messagingSenderId: '1060696718130',
     projectId: 'all-in-agri',
@@ -56,20 +55,21 @@ class DefaultFirebaseOptions {
     storageBucket: 'all-in-agri.appspot.com',
   );
 
-  static FirebaseOptions android = FirebaseOptions(
-    apiKey: dotenv.env['GOOGLE_API_KEY1'] ?? '',
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyCskTPMKHMATcjJ5OXh4j_kLa-pNrxoaBo',
     appId: '1:1060696718130:android:6cf4e0cec48337e126f52b',
     messagingSenderId: '1060696718130',
     projectId: 'all-in-agri',
     storageBucket: 'all-in-agri.appspot.com',
   );
 
-  static FirebaseOptions ios = FirebaseOptions(
-    apiKey: dotenv.env['GOOGLE_API_KEY3'] ?? '',
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAMaFUo_xMj3ASry0gRUBquKo2Il-qCFUY',
     appId: '1:1060696718130:ios:c00c13330d358d0226f52b',
     messagingSenderId: '1060696718130',
     projectId: 'all-in-agri',
     storageBucket: 'all-in-agri.appspot.com',
     iosBundleId: 'com.example.allinagri',
   );
+
 }

@@ -1,9 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/features/buyer/presentation/inner_screens/product_detail_screen.dart';
 import 'package:farmlynco/features/farmer/domain/product_model.dart';
 import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,10 +12,14 @@ class ProductCard extends StatelessWidget {
     super.key,
     this.onTap,
     required this.product,
+    required this.isBookmarked,
+    this.onPressed,
   });
 
   final void Function()? onTap;
   final ProductModel product;
+  final bool isBookmarked;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -114,21 +118,20 @@ class ProductCard extends StatelessWidget {
                       ),
                     ),
                     Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton.filledTonal(
-                          style: ButtonStyle(
-                            shape: WidgetStatePropertyAll(CircleBorder(
-                                side: BorderSide(
-                                    color: Colors.white, width: 2.h))),
-                            backgroundColor: const WidgetStatePropertyAll(
-                                Color.fromARGB(94, 255, 255, 255)),
-                          ),
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.favorite_outline,
-                            color: Colors.white,
-                          )),
-                    )
+                        alignment: Alignment.topRight,
+                        child: IconButton.filledTonal(
+                            style: ButtonStyle(
+                              shape: WidgetStatePropertyAll(CircleBorder(
+                                  side: BorderSide(
+                                      color: Colors.white, width: 2.h))),
+                              backgroundColor: const WidgetStatePropertyAll(
+                                  Color.fromARGB(94, 255, 255, 255)),
+                            ),
+                            onPressed: onPressed,
+                            icon: isBookmarked
+                                ? const Icon(Icons.favorite, color: Colors.red)
+                                : const Icon(Icons.favorite_outline,
+                                    color: Colors.white)))
                   ],
                 ),
               ),

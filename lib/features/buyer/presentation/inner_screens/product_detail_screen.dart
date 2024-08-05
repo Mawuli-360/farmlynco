@@ -1,5 +1,7 @@
 import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/buyer/presentation/inner_screens/view_store_detail_screen.dart';
+import 'package:farmlynco/features/communication/chat/chat_page.dart';
+import 'package:farmlynco/features/communication/chat/chat_service.dart';
 import 'package:farmlynco/features/farmer/domain/product_model.dart';
 import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
@@ -27,26 +29,39 @@ class ProductDetailScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              width: 180.w,
-              height: 50.h,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(118, 25, 163, 140),
-                borderRadius:
-                    BorderRadius.only(topRight: Radius.circular(20.r)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CustomText(
-                    body: "Whatsapp",
-                    fontSize: 18,
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.bold,
+            GestureDetector(
+              onTap: () async {
+                final chatService = ChatService();
+                final chatRoomID = await chatService
+                    .initiateChatWithProductOwner(product.productOwner);
+                Navigation.navigatePush(
+                  ChatPage(
+                    chatRoomID: chatRoomID,
+                    receiverEmail: product.productOwner,
                   ),
-                  10.horizontalSpace,
-                  AppImages.whatsapp
-                ],
+                );
+              },
+              child: Container(
+                width: 180.w,
+                height: 50.h,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(118, 25, 163, 140),
+                  borderRadius:
+                      BorderRadius.only(topRight: Radius.circular(20.r)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CustomText(
+                      body: "Whatsapp",
+                      fontSize: 18,
+                      color: AppColors.primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    10.horizontalSpace,
+                    AppImages.whatsapp
+                  ],
+                ),
               ),
             ),
             Container(
@@ -116,17 +131,6 @@ class ProductDetailScreen extends StatelessWidget {
                         color: AppColors.green,
                       )),
                 ),
-                Positioned(
-                  bottom: 5.h,
-                  right: 5.h,
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.favorite_outline,
-                        color: Colors.white,
-                        size: 35.h,
-                      )),
-                )
               ],
             ),
             Expanded(
@@ -191,9 +195,8 @@ class ProductDetailScreen extends StatelessWidget {
                         10.verticalSpace,
                         Container(
                           padding: EdgeInsets.all(8.r),
-                          child: const CustomText(
-                            body:
-                                'Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame ',
+                          child: CustomText(
+                            body: product.description,
                             fontSize: 14,
                           ),
                         ),
@@ -214,7 +217,7 @@ class ProductDetailScreen extends StatelessWidget {
                               color: AppColors.primaryColor,
                             ),
                           ),
-                        40.verticalSpace,
+                        20.verticalSpace,
                         const CustomText(
                           body: "Trader Info",
                           fontSize: 16,
@@ -223,6 +226,7 @@ class ProductDetailScreen extends StatelessWidget {
                         ),
                         10.verticalSpace,
                         _SellerInfoCard(product),
+                        20.verticalSpace
                       ],
                     ),
                   ),

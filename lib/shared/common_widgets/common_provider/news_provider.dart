@@ -1,6 +1,5 @@
-
 import 'package:farmlynco/features/authentication/data/auth_repository.dart';
-import 'package:farmlynco/features/farmer/presentation/news/news_model.dart';
+import 'package:farmlynco/features/farmer/domain/news_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final fetchNewsDetailProvider = StreamProvider<List<NewsFeedModel>>((ref) {

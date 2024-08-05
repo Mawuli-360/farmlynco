@@ -1,4 +1,3 @@
-
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:flutter/material.dart';

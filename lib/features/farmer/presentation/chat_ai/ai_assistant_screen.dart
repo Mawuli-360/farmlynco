@@ -1,4 +1,3 @@
-
 import 'package:farmlynco/features/farmer/presentation/chat_ai/component/message_widget.dart';
 import 'package:farmlynco/features/farmer/presentation/chat_ai/provider/chat_provider.dart';
 import 'package:flutter/material.dart';

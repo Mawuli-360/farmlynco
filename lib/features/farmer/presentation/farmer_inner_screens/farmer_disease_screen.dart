@@ -1,9 +1,10 @@
-
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/features/buyer/presentation/widgets/news_card.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_inner_screens/farmer_inner_screens_widgets.dart/top_pick_card.dart';
+import 'package:farmlynco/features/farmer/presentation/farmers_providers/fetch_diseases_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
+import 'package:farmlynco/util/custom_loading_scale.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,6 +34,8 @@ class _FarmerDiseaseScreenState extends ConsumerState<FarmerDiseaseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final disease = ref.watch(fetchDiseasesDetailProvider);
+
     return Scaffold(
       appBar: const CustomAppBar(
         title: "Top Trending Disease",
@@ -66,17 +69,24 @@ class _FarmerDiseaseScreenState extends ConsumerState<FarmerDiseaseScreen> {
                 left: 15,
                 top: 15,
               ),
-              ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 4,
-                  itemBuilder: (context, index) {
-                    return const NewsCard(
-                      image: '',
-                      title: '',
-                      content: '',
-                    );
-                  }),
+              disease.when(
+                  data: (data) {
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                         
+                          return NewsCard(
+                            image: data[index].image,
+                            title: data[index].title,
+                            content: data[index].content,
+                          );
+                        });
+                  },
+                  loading: () => const CustomLoadingScale(),
+                  error: (error, stacktrace) =>
+                      Center(child: CustomText(body: error.toString())))
             ],
           ),
         ),

@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmlynco/features/authentication/presentation/email_verification_screen.dart';
 import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/util/loading_overlay.dart';
 import 'package:farmlynco/util/show_toast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +25,8 @@ class AuthRepository {
   AuthRepository(this._auth, this._firebaseFirestore, this._ref);
   final FirebaseAuth _auth;
   final FirebaseFirestore _firebaseFirestore;
+  GoogleSignIn googleSignIn = GoogleSignIn();
+
   final Ref _ref;
   final LoadingOverlay _loadingOverlay = LoadingOverlay();
   Stream<User?> authStateChanges() => _auth.authStateChanges();
@@ -172,9 +174,39 @@ class AuthRepository {
     }
   }
 
-  Future<void> signOut() async {
-    await _auth.signOut();
-    Navigation.navigateTo(Navigation.loginScreen);
+  Future<void> signOut(BuildContext context) async {
+    _loadingOverlay.show(context);
+
+    try {
+      final user = _auth.currentUser;
+
+      if (user != null) {
+        bool isGoogleUser = user.providerData
+            .any((userInfo) => userInfo.providerId == 'google.com');
+
+        if (isGoogleUser) {
+          // Reinitialize GoogleSignIn
+          googleSignIn = GoogleSignIn();
+
+          try {
+            await googleSignIn.disconnect();
+            await googleSignIn.signOut();
+          } catch (googleError) {
+            // print('Error with Google Sign-In: $googleError');
+            showToast('Error with Google Sign-In: $googleError');
+          }
+        }
+
+        await _auth.signOut();
+      }
+
+      _loadingOverlay.hide();
+      Navigation.navigateTo(Navigation.loginScreen);
+    } catch (e) {
+      _loadingOverlay.hide();
+      // print('Error during sign out: $e');
+      showToast('Error during sign out: $e');
+    }
   }
 
   Future<void> resetPassword({required String email}) async {
@@ -198,49 +230,57 @@ class AuthRepository {
     _loadingOverlay.show(context);
 
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final googleUser = await googleSignIn.signIn();
 
-      if (googleUser != null) {
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
-        final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-
-        // Sign in to Firebase
-        final UserCredential userCredential =
-            await _auth.signInWithCredential(credential);
-        final User? user = userCredential.user;
-
-        if (user != null) {
-          // Prepare user data
-          final userData = {
-            'email': user.email,
-            'displayName': user.displayName ?? 'Unnamed User',
-            'photoURL': user.photoURL ??
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1200px-User-avatar.svg.png",
-            'role': 'Buyer',
-          };
-
-          // Store or update user data in Firestore
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .set(userData, SetOptions(merge: true));
-
-          _loadingOverlay.hide();
-
-          Navigation.navigateReplace(Navigation.buyerLandingScreen);
-        }
+      if (googleUser == null) {
+        _loadingOverlay.hide();
+        showToast("Failed Authentication");
       }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+      final User? user = userCredential.user;
+
+      // if (user == null) {
+
+      // }
+
+      if (user != null) {
+        // Prepare user data
+        final userData = {
+          'email': user.email,
+          'fullName': user.displayName ?? 'Unnamed User',
+          'imageUrl': user.photoURL ??
+              "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1200px-User-avatar.svg.png",
+          'role': 'Buyer',
+        };
+
+        // Store or update user data in Firestore
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userData, SetOptions(merge: true));
+
+        _loadingOverlay.hide();
+
+        Navigation.navigateReplace(Navigation.buyerLandingScreen);
+      }
+      _loadingOverlay.hide();
     } catch (e) {
-      // print('Error signing in with Google: $e');
       _loadingOverlay.hide();
 
       // Show error message to user
       showToast('Failed to sign in with Google. Please try again.');
     }
+
   }
 }
 

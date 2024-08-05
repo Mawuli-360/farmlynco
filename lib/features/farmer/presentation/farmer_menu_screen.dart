@@ -1,5 +1,3 @@
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/features/authentication/data/auth_repository.dart';
 import 'package:farmlynco/features/communication/chat/chat_home_screen.dart';
@@ -8,12 +6,14 @@ import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/shared/common_widgets/common_provider/user_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/shared/common_widgets/menu_tile.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:photo_view/photo_view.dart';
 
 class FarmerMenuScreen extends ConsumerWidget {
   const FarmerMenuScreen({
@@ -37,34 +37,65 @@ class FarmerMenuScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               75.verticalSpace,
-              Stack(
-                children: [
-                  Container(
-                    height: 100.h,
-                    width: 100.h,
-                    margin: EdgeInsets.only(left: 15.h),
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color.fromARGB(162, 255, 255, 255)),
-                  ),
-                  Positioned(
-                    left: 5.h,
-                    top: 5.h,
-                    child: Container(
-                      height: 90.h,
-                      width: 90.h,
-                      margin: EdgeInsets.only(left: 15.h),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(user?.imageUrl ??
-                                "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1200px-User-avatar.svg.png"),
-                          )),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      appBar: AppBar(
+                        backgroundColor: Colors.black,
+                        leading: IconButton(
+                            onPressed: () => Navigation.pop(),
+                            icon: Icon(
+                              Icons.arrow_back_ios_new_outlined,
+                              color: Colors.white,
+                              size: 22.h,
+                            )),
+                      ),
+                      extendBody: true,
+                      extendBodyBehindAppBar: true,
+                      body: PhotoView(
+                        imageProvider: CachedNetworkImageProvider(user
+                                ?.imageUrl ??
+                            "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1200px-User-avatar.svg.png"),
+                        minScale: PhotoViewComputedScale.contained,
+                        maxScale: PhotoViewComputedScale.covered * 2,
+                        backgroundDecoration: const BoxDecoration(
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ));
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      height: 100.h,
+                      width: 100.h,
+                      margin: EdgeInsets.only(left: 15.h),
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color.fromARGB(162, 255, 255, 255)),
+                    ),
+                    Positioned(
+                      left: 5.h,
+                      top: 5.h,
+                      child: Container(
+                        height: 90.h,
+                        width: 90.h,
+                        margin: EdgeInsets.only(left: 15.h),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: CachedNetworkImageProvider(user
+                                      ?.imageUrl ??
+                                  "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1200px-User-avatar.svg.png"),
+                            )),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               8.verticalSpace,
               Row(
@@ -148,7 +179,7 @@ class FarmerMenuScreen extends ConsumerWidget {
                 menu: "Logout",
                 color: const Color.fromARGB(0, 165, 104, 104),
                 onTap: () {
-                  ref.read(authRepositoryProvider).signOut();
+                  ref.read(authRepositoryProvider).signOut(context);
                 },
               ),
             ],

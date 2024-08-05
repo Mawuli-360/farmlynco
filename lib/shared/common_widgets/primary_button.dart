@@ -1,7 +1,7 @@
-import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:farmlynco/core/constant/app_colors.dart';
 
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton(

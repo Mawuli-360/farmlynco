@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:farmlynco/features/buyer/presentation/inner_screens/read_detail_screen.dart';
 import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:html/parser.dart' show parse;
@@ -19,8 +19,11 @@ class FarmerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final document = parse(content);
-    final String plainText = parse(document.body!.text).documentElement!.text;
-
+    final paragraphs = document.getElementsByTagName('p');
+    final String plainText = paragraphs.isNotEmpty
+        ? paragraphs.map((element) => element.text).join(' ')
+        : '';
+        
     return GestureDetector(
       onTap: () => Navigation.navigatePush(ReadDetailScreen(
         image: image,

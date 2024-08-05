@@ -1,12 +1,13 @@
+import 'package:farmlynco/features/farmer/domain/farmer_user.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SellerCard extends StatelessWidget {
-  const SellerCard({
-    super.key,
-  });
+  const SellerCard({super.key, required this.user});
+
+  final FarmerUser user;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +24,10 @@ class SellerCard extends StatelessWidget {
                 spreadRadius: 0.2.r,
                 offset: const Offset(0, 0)),
           ],
-          image: const DecorationImage(
+          image:  DecorationImage(
               fit: BoxFit.cover,
               image: CachedNetworkImageProvider(
-                  "https://i0.wp.com/farmingwithnature.co.za/wp-content/uploads/2023/07/ventures49.jpg?fit=2000%2C1125&ssl=1"))),
+                  user.imageUrl))),
       child: Align(
         alignment: Alignment.bottomLeft,
         child: Padding(
@@ -37,8 +38,8 @@ class SellerCard extends StatelessWidget {
               color: const Color.fromARGB(131, 0, 0, 0),
               width: double.infinity,
               padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 5.h),
-              child: const CustomText(
-                body: "Name: Amina Zigah Kofi",
+              child:  CustomText(
+                body: "Name: ${user.fullName}",
                 fontSize: 16,
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
