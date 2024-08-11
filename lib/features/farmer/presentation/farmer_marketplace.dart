@@ -57,7 +57,7 @@ class _FarmerMarketPlaceState extends ConsumerState<FarmerMarketPlace> {
   @override
   Widget build(BuildContext context) {
     final countProduct = ref.watch(productCountProvider);
-    final fetchProduct = ref.watch(fetchProductProvider);
+    final fetchProduct = ref.watch(fetchFarmerProductProvider);
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(

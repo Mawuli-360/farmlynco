@@ -31,7 +31,7 @@ class _BuyerSearchScreenState extends ConsumerState<BuyerSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final searchResult = ref.watch(filteredProductsProvider(query));
+    final searchResult = ref.watch(searchProductsProvider(query));
     final bookmarkedItems = ref.watch(favoriteProvider);
 
     return Scaffold(

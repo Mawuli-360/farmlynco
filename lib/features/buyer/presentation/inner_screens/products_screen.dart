@@ -19,22 +19,9 @@ class ProductsScreen extends ConsumerStatefulWidget {
 }
 
 class _ProductsScreenState extends ConsumerState<ProductsScreen> {
-  List<String> categories = [
-    "All",
-    "Vegetables",
-    "Oil",
-    "Tubers",
-    "Fruits",
-    "Legumes",
-    "Grains",
-    "Spices",
-    "Poultry/Meat"
-  ];
-  String selectedValue = "All";
-
   @override
   Widget build(BuildContext context) {
-    final productList = ref.watch(selectedProductsProvider(selectedValue));
+    final productList = ref.watch(fetchProductsProvider);
     final bookmarkedItems = ref.watch(favoriteProvider);
 
     return Scaffold(
@@ -48,46 +35,6 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              20.verticalSpace,
-              SizedBox(
-                height: 44.h,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.only(left: 15.h, right: 15.h),
-                  separatorBuilder: (context, index) => 10.horizontalSpace,
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) => GestureDetector(
-                    onTap: () {
-                      ref.read(selectedProductsProvider(categories[index]));
-                    },
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedValue = categories[index];
-                        });
-                      },
-                      child: ChoiceChip(
-                          labelStyle: const TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
-                          color: WidgetStateProperty.all(
-                              selectedValue == categories[index]
-                                  ? const Color.fromARGB(152, 224, 242, 241)
-                                  : const Color.fromARGB(149, 194, 206, 206)),
-                          shape: StadiumBorder(
-                              side: BorderSide(
-                                  color: selectedValue == categories[index]
-                                      ? AppColors.green
-                                      : const Color.fromARGB(56, 40, 49, 48))),
-                          showCheckmark: true,
-                          label: CustomText(
-                            body: categories[index],
-                            fontSize: 14,
-                          ),
-                          selected: selectedValue == categories[index]),
-                    ),
-                  ),
-                ),
-              ),
               20.verticalSpace,
               productList.when(
                   data: (data) {

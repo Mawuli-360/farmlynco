@@ -95,7 +95,7 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
               decoration: const BoxDecoration(
                 color: Colors.white,
               ),
-              child: Column(
+              child: ListView(
                 children: [
                   // 30.verticalSpace,
                   LottieBuilder.asset(
