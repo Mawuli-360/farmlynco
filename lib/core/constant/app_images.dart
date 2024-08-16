@@ -31,6 +31,9 @@ class AppImages {
   static const logo = AssetImage("assets/images/FarmLynco.png");
   static const plantDiagnostic =
       AssetImage("assets/images/plantDiagnostic.png");
+  static const location = AssetImage("assets/images/location.png");
+  static const pressure = AssetImage("assets/images/pressure.png");
+  static const windPower = AssetImage("assets/images/wind-power.png");
 
   //-------------------------------------------------------------------------//
   //                             JPG IMAGES                                  //

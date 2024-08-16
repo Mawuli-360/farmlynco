@@ -11,10 +11,6 @@ void showToast(String message) {
       snackbarDuration: const Duration(seconds: 3),
       animationDuration: const Duration(milliseconds: 400),
       builder: (context) => ToastCard(
-        // leading: const Icon(
-        //   Icons.flutter_dash,
-        //   size: 28,
-        // ),
         title: Text(
           message,
           style: const TextStyle(
@@ -24,7 +20,7 @@ void showToast(String message) {
         ),
       ),
     ).show(context);
-  } else {
-    // print("Context is null. Unable to show toast.");
-  }
+  } else {}
 }
+
+

@@ -4,6 +4,7 @@ import 'package:farmlynco/features/farmer/presentation/farmer_widgets/recommenda
 import 'package:farmlynco/main.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
+import 'package:farmlynco/util/show_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,7 +22,7 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> animation;
-  bool isForward = true; // To keep track of animation direction
+  bool isForward = true;
 
   @override
   void initState() {
@@ -95,7 +96,7 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
               decoration: const BoxDecoration(
                 color: Colors.white,
               ),
-              child: ListView(
+              child: Column(
                 children: [
                   // 30.verticalSpace,
                   LottieBuilder.asset(
@@ -104,10 +105,22 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
                     width: 150.h,
                     fit: BoxFit.cover,
                   ),
-                  const RecommendatioCard(
+                  RecommendatioCard(
                     title: 'Today Weather Recommendation',
                     response:
                         'Select your favorite social network and share our icons with your contacts or friends. If you don’t have these social networks, simply copy the link and paste it in the one you use.',
+                    onTap: () {
+                      showCustomBottomSheet(context, "data");
+                    },
+                  ),
+                  20.verticalSpace,
+                  RecommendatioCard(
+                    title: 'Spraying and Fertilizer Advice',
+                    response:
+                        'Select your favorite social network and share our icons with your contacts or friends. If you don’t have these social networks, simply copy the link and paste it in the one you use.',
+                    onTap: () {
+                      showCustomBottomSheet(context, "data");
+                    },
                   ),
                 ],
               ),
@@ -115,15 +128,15 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
           ),
           Positioned(
             top: 150.h,
-            left: 50.h,
+            left: 60.h,
             right: 0,
             child: Row(
               children: [
-                Icon(
-                  Icons.location_on_outlined,
-                  size: 68.h,
-                  color: Colors.white,
+                Image(
+                  image: AppImages.location,
+                  height: 60.h,
                 ),
+                10.horizontalSpace,
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

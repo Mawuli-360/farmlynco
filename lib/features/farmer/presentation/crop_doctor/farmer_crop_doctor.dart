@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/farmer/presentation/crop_doctor/diagnosis_history.dart';
@@ -9,6 +11,7 @@ import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/shared/common_widgets/primary_button.dart';
 import 'package:farmlynco/util/loading_overlay.dart';
+import 'package:farmlynco/util/show_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,7 +56,6 @@ class FarmerCropDoctor extends ConsumerWidget {
         );
       },
     );
-    
 
     if (image != null) {
       try {
@@ -114,8 +116,15 @@ class FarmerCropDoctor extends ConsumerWidget {
           // print('File does not exist at path: ${file.path}');
           loadingOverlay.hide();
         }
+      } on SocketException catch (_) {
+        showToast("Network connection is bad");
+        loadingOverlay.hide();
+      } on TimeoutException catch (_) {
+        showToast("Request timeout please try again later");
+
+        loadingOverlay.hide();
       } catch (e) {
-        // print('Error accessing file: $e');
+        showToast('Error accessing file: $e');
         loadingOverlay.hide();
       }
     }
@@ -137,9 +146,16 @@ class FarmerCropDoctor extends ConsumerWidget {
       } else {
         return 'Failed to get diagnosis';
       }
+    } on SocketException catch (_) {
+      return "Network connection is bad";
+    } on TimeoutException catch (_) {
+      return "Request timeout please try again later";
     } catch (e) {
       return 'Error: $e';
     }
+    // catch (e) {
+    //   return 'Error: $e';
+    // }
   }
 
   String formatDiagnosisAsMarkdown(String rawDiagnosis) {

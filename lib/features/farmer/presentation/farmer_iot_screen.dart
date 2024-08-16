@@ -1,12 +1,13 @@
-import 'package:farmlynco/core/constant/app_colors.dart';
-import 'package:farmlynco/core/constant/app_images.dart';
-import 'package:farmlynco/features/farmer/presentation/farmer_widgets/recommendation_card.dart';
-import 'package:farmlynco/main.dart';
-import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
-import 'package:farmlynco/shared/common_widgets/custom_text.dart';
+import 'package:farmlynco/util/show_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:farmlynco/core/constant/app_colors.dart';
+import 'package:farmlynco/core/constant/app_images.dart';
+import 'package:farmlynco/main.dart';
+import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
+import 'package:farmlynco/shared/common_widgets/custom_text.dart';
+import 'package:lottie/lottie.dart';
 
 class FarmerIotScreen extends ConsumerWidget {
   const FarmerIotScreen({super.key});
@@ -30,138 +31,156 @@ class FarmerIotScreen extends ConsumerWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
-                height: 210.h,
-                child: Stack(
+              Container(
+                height: 135.h,
+                decoration: BoxDecoration(
+                    color: AppColors.headerTitleColor,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20.h),
+                      bottomRight: Radius.circular(20.h),
+                    )),
+                child: Row(
                   children: [
-                    Container(
-                        // color: Colors.red,
-                        // height: 350.h,
-                        ),
-                    Container(
+                    10.horizontalSpace,
+                    LottieBuilder.asset(
+                      "assets/animations/farm.json",
                       height: 120.h,
-                      decoration: BoxDecoration(
-                          color: AppColors.headerTitleColor,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20.h),
-                            bottomRight: Radius.circular(20.h),
-                          )),
                     ),
-                    Positioned(
-                      top: 70.h,
-                      left: 10.h,
-                      child: Card(
-                        elevation: 5,
-                        color: Colors.white,
-                        child: SizedBox(
-                            height: 100.h,
-                            width: 170.w,
-                            child: Row(
-                              children: [
-                                Image(
-                                  image: AppImages.thermometer,
-                                  height: 42.h,
-                                ),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const CustomText(
-                                          body: "32",
-                                          fontSize: 40,
-                                          color: AppColors.headerTitleColor,
-                                        ),
-                                        8.horizontalSpace,
-                                        const CustomText(
-                                          body: "°C",
-                                          fontSize: 25,
-                                          color: AppColors.headerTitleColor,
-                                        ),
-                                      ],
-                                    ),
-                                    const CustomText(
-                                      body: "Temperature",
-                                      fontSize: 16,
-                                      color: AppColors.headerTitleColor,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                      ),
-                    ),
-                    Positioned(
-                      top: 70.h,
-                      right: 10.h,
-                      child: Card(
-                        elevation: 5,
-                        color: Colors.white,
-                        child: SizedBox(
-                            height: 100.h,
-                            width: 170.w,
-                            child: Row(
-                              children: [
-                                Image(
-                                  image: AppImages.moist,
-                                  height: 42.h,
-                                ),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const CustomText(
-                                          body: "10",
-                                          fontSize: 40,
-                                          color: AppColors.headerTitleColor,
-                                        ),
-                                        8.horizontalSpace,
-                                        const CustomText(
-                                          body: "m3",
-                                          fontSize: 22,
-                                          color: AppColors.headerTitleColor,
-                                        ),
-                                      ],
-                                    ),
-                                    const CustomText(
-                                      body: "Moisture",
-                                      fontSize: 16,
-                                      color: AppColors.headerTitleColor,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                      ),
-                    ),
-                    Positioned(
-                      top: 20.h,
-                      child: CustomText(
-                        body:
-                            "Harnessing IoT technologies enhances\nefficiency and connectivity.",
-                        fontSize: 16,
-                        color: AppColors.white,
-                        textAlign: TextAlign.center,
-                        left: 25.h,
-                      ),
-                    ),
+                    10.horizontalSpace,
+                    const CustomText(
+                      body:
+                          "Harnessing IoT technologies\nenhances efficiency and\nconnectivity.",
+                      fontSize: 16,
+                      color: AppColors.white,
+                      textAlign: TextAlign.center,
+                      fontWeight: FontWeight.w500,
+                    )
                   ],
                 ),
               ),
-              const RecommendatioCard(
-                title: 'Soil Temperature',
-                response:
-                    'Select your favorite social network and share our icons with your contacts or friends. If you don’t have these social networks, simply copy the link and paste it in the one you use.',
+              80.verticalSpace,
+              Row(
+                children: [
+                  12.horizontalSpace,
+                  IoTCard(
+                    readings: '36',
+                    symbol: '°C',
+                    name: 'Temperature',
+                    image: AppImages.thermometer,
+                    onTap: () {
+                      showCustomBottomSheet(context, "data");
+                    },
+                  ),
+                  10.horizontalSpace,
+                  const IoTCard(
+                      readings: "10",
+                      symbol: "m3",
+                      name: "Moisture",
+                      image: AppImages.moist),
+                ],
               ),
               20.verticalSpace,
-              const RecommendatioCard(
-                title: 'Soil Moisture',
-                response:
-                    'Select your favorite social network and share our icons with your contacts or friends. If you don’t have these social networks, simply copy the link and paste it in the one you use.',
+              Row(
+                children: [
+                  12.horizontalSpace,
+                  const IoTCard(
+                      readings: "10",
+                      symbol: "m3",
+                      name: "Wind Speed",
+                      image: AppImages.windPower),
+                  10.horizontalSpace,
+                  const IoTCard(
+                      readings: "10",
+                      symbol: "m3",
+                      name: "Pressure",
+                      image: AppImages.pressure)
+                ],
               ),
-              30.verticalSpace,
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class IoTCard extends StatelessWidget {
+  const IoTCard({
+    super.key,
+    required this.readings,
+    required this.symbol,
+    required this.name,
+    required this.image,
+    this.onTap,
+  });
+
+  final String readings;
+  final String symbol;
+  final String name;
+  final AssetImage image;
+  final void Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 6,
+        color: AppColors.appBgColor,
+        child: SizedBox(
+            height: 140.h,
+            width: 170.w,
+            child: Row(
+              children: [
+                Image(
+                  image: image,
+                  height: 42.h,
+                ),
+                8.horizontalSpace,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    10.verticalSpace,
+                    Row(
+                      children: [
+                        CustomText(
+                          body: readings,
+                          fontSize: 40,
+                          color: AppColors.headerTitleColor,
+                        ),
+                        8.horizontalSpace,
+                        CustomText(
+                          body: symbol,
+                          fontSize: 25,
+                          color: AppColors.headerTitleColor,
+                        ),
+                      ],
+                    ),
+                    CustomText(
+                      body: name,
+                      fontSize: 16,
+                      color: AppColors.headerTitleColor,
+                    ),
+                    10.verticalSpace,
+                    Row(
+                      children: [
+                        const CustomText(
+                          body: "view more",
+                          fontSize: 13,
+                          color: AppColors.headerTitleColor,
+                        ),
+                        4.horizontalSpace,
+                        const Icon(
+                          Icons.arrow_forward,
+                          color: AppColors.headerTitleColor,
+                          size: 16,
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ],
+            )),
       ),
     );
   }

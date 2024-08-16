@@ -36,6 +36,18 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
     super.dispose();
   }
 
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final chatState = ref.watch(chatProvider);
@@ -43,7 +55,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Rice Farmer Chatbot",
+        title: "Farmer Chatbot",
         actions: [
           IconButton(
               onPressed: () => chatNotifier.clearChatHistory(),
@@ -51,7 +63,14 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                 Icons.delete,
                 color: Colors.red,
                 size: 25.h,
-              ))
+              )),
+          IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.language_outlined,
+                color: AppColors.green,
+                size: 25.h,
+              )),
         ],
       ),
       body: SizedBox(
@@ -140,30 +159,32 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                                   child: ListView.builder(
                                     controller: _scrollController,
                                     physics: const BouncingScrollPhysics(),
+                                    reverse: true,
                                     itemCount:
                                         chatState.groupedMessages.length +
                                             (chatState.isTyping ? 1 : 0),
                                     itemBuilder: (context, index) {
-                                      if (index ==
-                                              chatState
-                                                  .groupedMessages.length &&
-                                          chatState.isTyping) {
+                                      if (chatState.isTyping && index == 0) {
                                         // This is the last item, and we're typing, so show the loading animation
                                         return Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: [
                                             Lottie.asset(
-                                                "assets/animations/loading.json",
-                                                height: 40.h,
-                                                width: 40.w),
+                                                "assets/animations/robot.json",
+                                                fit: BoxFit.fill,
+                                                height: 100.h,
+                                                width: 100.h),
                                           ],
                                         );
                                       }
 
-                                      // Otherwise, show the grouped messages as before
-                                      final groupedMessage =
-                                          chatState.groupedMessages[index];
+                                      final actualIndex = chatState.isTyping
+                                          ? index - 1
+                                          : index;
+                                      final groupedMessage = chatState
+                                          .groupedMessages[actualIndex];
+
                                       return Column(
                                         children: [
                                           // Date header
@@ -182,6 +203,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                                           // Messages for this date
                                           ListView.builder(
                                             shrinkWrap: true,
+                                            // reverse: true,
                                             physics:
                                                 const NeverScrollableScrollPhysics(),
                                             itemCount:
@@ -267,6 +289,8 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                         FocusScope.of(context).requestFocus(FocusNode());
                         chatNotifier.sendMessage(promptController.text);
                         promptController.clear();
+                        (_AssistantScreenState state) =>
+                            state._scrollToBottom();
                       },
                       child: Container(
                           height: 45.h,

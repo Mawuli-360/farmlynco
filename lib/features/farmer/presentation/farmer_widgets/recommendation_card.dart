@@ -7,14 +7,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class RecommendatioCard extends StatefulWidget {
-  const RecommendatioCard({
-    super.key,
-    required this.title,
-    required this.response,
-  });
+  const RecommendatioCard(
+      {super.key, required this.title, required this.response, this.onTap});
 
   final String title;
   final String response;
+  final void Function()? onTap;
 
   @override
   State<RecommendatioCard> createState() => _RecommendatioCardState();
@@ -65,12 +63,7 @@ $response
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        String response = await postWeatherInsights();
-        setState(() {
-          insights = response;
-        });
-      },
+      onTap: widget.onTap,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10.h),
         padding: EdgeInsets.all(10.h),
@@ -95,9 +88,13 @@ $response
               fontWeight: FontWeight.w500,
               fontSize: 18,
             ),
-            CustomText(
-              body: insights,
-              fontSize: 16,
+            9.verticalSpace,
+            const CustomText(
+              body:
+                  "Select your favorite social network and share our icons with your contacts or friends. If you don’t have these social networks, simply copy the link and paste it in the one you use.",
+              fontSize: 15,
+              maxLines: 3,
+              textOverflow: TextOverflow.ellipsis,
             ),
           ],
         ),

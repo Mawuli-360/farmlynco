@@ -3,7 +3,7 @@ import 'package:farmlynco/features/farmer/domain/chat_domain/message_model.dart'
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 
 class MessageWidget extends StatelessWidget {
   final Messages message;
@@ -34,9 +34,7 @@ class MessageWidget extends StatelessWidget {
                 message.text,
                 style: TextStyle(
                   fontSize: 16.sp,
-                  color: message.sender == Sender.user
-                      ? Colors.white
-                      : AppColors.white,
+                  color: Colors.white,
                 ),
               ),
               SizedBox(height: 4.h),

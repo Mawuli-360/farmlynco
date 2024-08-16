@@ -96,6 +96,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
       isTyping: true,
     );
 
+    groupMessages();
+
     final responseText = await chatRepository.fetchChatResponse(messageText);
 
     Messages botMessage = Messages(
@@ -161,11 +163,13 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
     List<GroupedMessages> groupedMessages = [];
     groupedMap.forEach((date, messages) {
+      // Sort messages within each group from oldest to newest
+      messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
       groupedMessages.add(GroupedMessages(date: date, messages: messages));
     });
 
-    // Sort grouped messages by date (most recent first)
-    groupedMessages.sort((a, b) => b.date.compareTo(a.date));
+    // Sort grouped messages by date (oldest first)
+    groupedMessages.sort((a, b) => a.date.compareTo(b.date));
 
     state = state.copyWith(groupedMessages: groupedMessages);
   }

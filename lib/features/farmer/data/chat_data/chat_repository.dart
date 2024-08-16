@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:farmlynco/features/farmer/domain/chat_domain/message_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,22 +31,33 @@ class ChatRepository {
   }
 
   Future<String> fetchChatResponse(String messageText) async {
-    final response = await http.post(
-      Uri.parse("https://newtonapi-f45t.onrender.com/agriculture-chatbot"),
-      headers: {
-        "accept": "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: Uri.encodeFull(
-        "query=$messageText",
-      ),
-    );
+    try {
+      final response = await http
+          .post(
+            Uri.parse(
+                "https://newtonapi-f45t.onrender.com/agriculture-chatbot"),
+            headers: {
+              "accept": "application/json",
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: Uri.encodeFull(
+              "query=$messageText",
+            ),
+          )
+          .timeout(const Duration(seconds: 10)); // Add a timeout of 10 seconds
 
-    if (response.statusCode == 200) {
-      final responseBody = jsonDecode(response.body);
-      return responseBody['response'];
-    } else {
-      throw Exception('Failed to fetch chat response');
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        return responseBody['response'];
+      } else {
+        return "Error occurred while fetching data. Status code: ${response.statusCode}";
+      }
+    } on SocketException catch (_) {
+      return "Bad network connection. Please check your internet and try again.";
+    } on TimeoutException catch (_) {
+      return "Request timed out. Please try again later.";
+    } catch (e) {
+      return "An error occurred while fetching data: ${e.toString()}";
     }
   }
 }
