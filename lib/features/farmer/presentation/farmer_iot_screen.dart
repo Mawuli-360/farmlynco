@@ -46,7 +46,7 @@ class FarmerIotScreen extends ConsumerWidget {
                       "assets/animations/farm.json",
                       height: 120.h,
                     ),
-                    10.horizontalSpace,
+                    2.horizontalSpace,
                     const CustomText(
                       body:
                           "Harnessing IoT technologies\nenhances efficiency and\nconnectivity.",
@@ -68,14 +68,15 @@ class FarmerIotScreen extends ConsumerWidget {
                     name: 'Temperature',
                     image: AppImages.thermometer,
                     onTap: () {
-                      showCustomBottomSheet(context, "data");
+                      showCustomBottomSheet(
+                          context, "data", "Weather Insights Result");
                     },
                   ),
                   10.horizontalSpace,
                   const IoTCard(
                       readings: "10",
                       symbol: "m3",
-                      name: "Moisture",
+                      name: "Humidity",
                       image: AppImages.moist),
                 ],
               ),
@@ -132,6 +133,7 @@ class IoTCard extends StatelessWidget {
             width: 170.w,
             child: Row(
               children: [
+                6.horizontalSpace,
                 Image(
                   image: image,
                   height: 42.h,
@@ -167,13 +169,13 @@ class IoTCard extends StatelessWidget {
                         const CustomText(
                           body: "view more",
                           fontSize: 13,
-                          color: AppColors.headerTitleColor,
+                          color: Color.fromARGB(139, 0, 0, 0),
                         ),
                         4.horizontalSpace,
                         const Icon(
-                          Icons.arrow_forward,
-                          color: AppColors.headerTitleColor,
-                          size: 16,
+                          Icons.arrow_forward_ios_outlined,
+                          color: Color.fromARGB(139, 0, 0, 0),
+                          size: 14,
                         )
                       ],
                     )

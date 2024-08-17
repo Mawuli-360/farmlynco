@@ -24,7 +24,7 @@ import 'package:farmlynco/features/farmer/presentation/farmer_inner_screens/farm
 import 'package:farmlynco/features/farmer/presentation/farmer_iot_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_landing_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_main_screen.dart';
-import 'package:farmlynco/features/farmer/presentation/farmer_weather_screen.dart';
+import 'package:farmlynco/features/farmer/presentation/weather/farmer_weather_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/store_setup/store_setup.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/shared/common_widgets/slide_page_animation.dart';

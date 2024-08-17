@@ -1,10 +1,11 @@
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/recommendation_card.dart';
+import 'package:farmlynco/features/farmer/presentation/farmer_widgets/spray_advice_card.dart';
+import 'package:farmlynco/features/farmer/presentation/weather/provider/weather_provider.dart';
 import 'package:farmlynco/main.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
-import 'package:farmlynco/util/show_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -105,23 +106,21 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
                     width: 150.h,
                     fit: BoxFit.cover,
                   ),
-                  RecommendatioCard(
-                    title: 'Today Weather Recommendation',
-                    response:
-                        'Select your favorite social network and share our icons with your contacts or friends. If you don’t have these social networks, simply copy the link and paste it in the one you use.',
-                    onTap: () {
-                      showCustomBottomSheet(context, "data");
-                    },
+                  const RecommendationCard(
+                    title: "Weather Insights",
                   ),
                   20.verticalSpace,
-                  RecommendatioCard(
-                    title: 'Spraying and Fertilizer Advice',
-                    response:
-                        'Select your favorite social network and share our icons with your contacts or friends. If you don’t have these social networks, simply copy the link and paste it in the one you use.',
-                    onTap: () {
-                      showCustomBottomSheet(context, "data");
-                    },
-                  ),
+                  // const SprayAdviceCard(
+                  //   title: "Spraying or Fertilizer Advice",
+                  // )
+                  // RecommendatioCard(
+                  //   title: 'Spraying and Fertilizer Advice',
+                  //   response:
+                  //       'Select your favorite social network and share our icons with your contacts or friends. If you don’t have these social networks, simply copy the link and paste it in the one you use.',
+                  //   onTap: () {
+                  //     showCustomBottomSheet(context, "data");
+                  //   },
+                  // ),
                 ],
               ),
             ),

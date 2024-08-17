@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class RecommendationCard extends ConsumerStatefulWidget {
-  const RecommendationCard({
+class SprayAdviceCard extends ConsumerStatefulWidget {
+  const SprayAdviceCard({
     super.key,
     required this.title,
   });
@@ -16,10 +16,10 @@ class RecommendationCard extends ConsumerStatefulWidget {
   final String title;
 
   @override
-  ConsumerState<RecommendationCard> createState() => _RecommendationCardState();
+  ConsumerState<SprayAdviceCard> createState() => _SprayAdviceCardState();
 }
 
-class _RecommendationCardState extends ConsumerState<RecommendationCard> {
+class _SprayAdviceCardState extends ConsumerState<SprayAdviceCard> {
   @override
   void initState() {
     super.initState();
@@ -30,21 +30,20 @@ class _RecommendationCardState extends ConsumerState<RecommendationCard> {
     ref.listen<AsyncValue<Map<String, String>>>(
       sensorDataStreamProvider,
       (_, next) => next.whenData((sensorData) {
-        print("HEREEEE IS THE SENSOR DATA: $sensorData");
-        ref.read(weatherInsightsProvider.notifier).fetchInsights(sensorData);
+        ref.read(sprayInsightsProvider.notifier).fetchSprayAdvice(sensorData);
       }),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final weatherInsights = ref.watch(weatherInsightsProvider);
+    final sprayInsights = ref.watch(sprayInsightsProvider);
 
     return GestureDetector(
       onTap: () {
-        weatherInsights.whenData((insights) {
+        sprayInsights.whenData((insights) {
           showCustomBottomSheet(
-              context, insights.insights, "Weather Insights Result");
+              context, insights.insights, "Spraying Insights Result");
         });
       },
       child: Container(
@@ -74,7 +73,7 @@ class _RecommendationCardState extends ConsumerState<RecommendationCard> {
               fontSize: 18,
             ),
             9.verticalSpace,
-            weatherInsights.when(
+            sprayInsights.when(
               data: (insights) {
                 return CustomText(
                   body: insights.insights,

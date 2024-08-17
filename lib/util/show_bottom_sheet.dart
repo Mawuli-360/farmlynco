@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-void showCustomBottomSheet(BuildContext context, String data) {
+void showCustomBottomSheet(BuildContext context, String data, String title) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -17,9 +18,10 @@ void showCustomBottomSheet(BuildContext context, String data) {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Diagnosis Result',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                Text(
+                  title,
+                  style:
+                      TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
                 Expanded(

@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:farmlynco/features/authentication/presentation/email_verification_screen.dart';
 import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/util/loading_overlay.dart';
@@ -5,6 +8,7 @@ import 'package:farmlynco/util/show_toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -226,6 +230,65 @@ class AuthRepository {
     }
   }
 
+  // Future<void> signInWithGoogle(BuildContext context) async {
+  //   _loadingOverlay.show(context);
+
+  //   try {
+  //     final googleUser = await googleSignIn.signIn();
+
+  //     if (googleUser == null) {
+  //       _loadingOverlay.hide();
+  //       showToast("Failed Authentication");
+  //     }
+
+  //     final GoogleSignInAuthentication googleAuth =
+  //         await googleUser!.authentication;
+  //     final credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth.accessToken,
+  //       idToken: googleAuth.idToken,
+  //     );
+
+  //     // Sign in to Firebase
+  //     final UserCredential userCredential =
+  //         await _auth.signInWithCredential(credential);
+  //     final User? user = userCredential.user;
+
+  //     if (user != null) {
+  //       // Prepare user data
+  //       final userData = {
+  //         'email': user.email,
+  //         'fullName': user.displayName ?? 'Unnamed User',
+  //         'imageUrl': user.photoURL ??
+  //             "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1200px-User-avatar.svg.png",
+  //         'role': 'Buyer',
+  //       };
+
+  //       // Store or update user data in Firestore
+  //       await FirebaseFirestore.instance
+  //           .collection('users')
+  //           .doc(user.uid)
+  //           .set(userData, SetOptions(merge: true));
+
+  //       _loadingOverlay.hide();
+
+  //       Navigation.navigateReplace(Navigation.buyerLandingScreen);
+  //     }
+  //     _loadingOverlay.hide();
+  //   } on SocketException catch (_) {
+  //     _loadingOverlay.hide();
+
+  //     showToast('Please check your internet connection.');
+  //   } on TimeoutException catch (_) {
+  //     _loadingOverlay.hide();
+
+  //     showToast('Request failed. Please try again later');
+  //   } catch (e) {
+  //     _loadingOverlay.hide();
+
+  //     showToast('Failed to sign in with Google. Please try again.');
+  //   }
+  // }
+
   Future<void> signInWithGoogle(BuildContext context) async {
     _loadingOverlay.show(context);
 
@@ -234,53 +297,77 @@ class AuthRepository {
 
       if (googleUser == null) {
         _loadingOverlay.hide();
-        showToast("Failed Authentication");
+        showToast("User cancelled the sign-in process");
+        return;
       }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+      try {
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        print("Successfully got googleAuth");
 
-      // Sign in to Firebase
-      final UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
-      final User? user = userCredential.user;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
 
-      // if (user == null) {
+        print("Created credential");
 
-      // }
+        // Sign in to Firebase
+        final UserCredential userCredential =
+            await _auth.signInWithCredential(credential);
+        final User? user = userCredential.user;
 
-      if (user != null) {
-        // Prepare user data
-        final userData = {
-          'email': user.email,
-          'fullName': user.displayName ?? 'Unnamed User',
-          'imageUrl': user.photoURL ??
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1200px-User-avatar.svg.png",
-          'role': 'Buyer',
-        };
+        print("Successfully signed in to Firebase");
 
-        // Store or update user data in Firestore
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .set(userData, SetOptions(merge: true));
+        if (user != null) {
+          // Prepare user data
+          final userData = {
+            'email': user.email,
+            'fullName': user.displayName ?? 'Unnamed User',
+            'imageUrl': user.photoURL ??
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1200px-User-avatar.svg.png",
+            'role': 'Buyer',
+          };
 
-        _loadingOverlay.hide();
+          // Store or update user data in Firestore
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .set(userData, SetOptions(merge: true));
 
-        Navigation.navigateReplace(Navigation.buyerLandingScreen);
+          _loadingOverlay.hide();
+
+          Navigation.navigateReplace(Navigation.buyerLandingScreen);
+        } else {
+          showToast("Failed to get user information from Firebase");
+        }
+      } catch (e) {
+        if (e is PlatformException) {
+          print("Error code: ${e.code}");
+          print("Error message: ${e.message}");
+          print("Error details: ${e.details}");
+        }
+        print("Error during Google authentication: $e");
+        showToast("Error during Google authentication: ${e.toString()}");
       }
-      _loadingOverlay.hide();
+    } on SocketException catch (e) {
+      print("SocketException: $e");
+      showToast('Please check your internet connection.');
+    } on TimeoutException catch (e) {
+      print("TimeoutException: $e");
+      showToast('Request failed. Please try again later');
     } catch (e) {
+      if (e is PlatformException) {
+        print("Error code: ${e.code}");
+        print("Error message: ${e.message}");
+        print("Error details: ${e.details}");
+      }
+      print("Unexpected error: $e");
+      showToast('Failed to sign in with Google: ${e.toString()}');
+    } finally {
       _loadingOverlay.hide();
-
-      // Show error message to user
-      showToast('Failed to sign in with Google. Please try again.');
     }
-
   }
 }
 
