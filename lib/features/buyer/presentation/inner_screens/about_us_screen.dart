@@ -1,8 +1,10 @@
 import 'package:farmlynco/core/constant/app_colors.dart';
+import 'package:farmlynco/helper/extensions/language_extension.dart';
+import 'package:farmlynco/shared/common_widgets/common_provider/language_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
+import 'package:farmlynco/util/custom_loading_scale.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class AboutUsScreen extends ConsumerWidget {
@@ -18,6 +20,7 @@ class AboutUsScreen extends ConsumerWidget {
       <p>We believe in the power of technology to transform the agricultural sector and are committed to supporting farmers in optimizing their resources, reducing waste, and maximizing their earnings.</p>
       <p><strong>Version:</strong> 1.0.0</p>
     ''';
+    final targetLanguage = ref.watch(currentLanguage);
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -26,16 +29,16 @@ class AboutUsScreen extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Html(
-          data: aboutUsHtml,
-          style: {
-            "span": Style(
-              color: AppColors.green,
-            ),
-            "p": Style(
-              fontSize: FontSize(16.0.sp),
-              color: Colors.black,
-            ),
+        child: FutureBuilder<String>(
+          future: aboutUsHtml.translateToString(targetLanguage),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CustomLoadingScale());
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return Html(data: snapshot.data ?? aboutUsHtml);
+            }
           },
         ),
       ),

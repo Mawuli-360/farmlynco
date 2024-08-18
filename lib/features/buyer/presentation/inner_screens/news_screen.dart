@@ -37,8 +37,6 @@ class NewsScreen extends ConsumerWidget {
                         return ListView.builder(
                             itemCount: data.length,
                             itemBuilder: (context, index) {
-                             
-
                               return NewsCard(
                                 image: data[index].image,
                                 title: data[index].title,

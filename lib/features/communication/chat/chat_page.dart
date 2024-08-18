@@ -1,22 +1,24 @@
+import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:farmlynco/features/communication/chat/chat_service.dart';
+import 'package:farmlynco/features/communication/chat/model/audio_cache.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmlynco/util/show_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
-// Import other necessary packages
 
 class ChatPage extends ConsumerStatefulWidget {
   const ChatPage(
-      {super.key, required this.chatRoomID, required this.receiverEmail});
+      {super.key, required this.chatRoomID, required this.receiverName});
 
   final String chatRoomID;
-  final String receiverEmail;
+  final String receiverName;
 
   @override
   ConsumerState<ChatPage> createState() => _ChatPageState();
@@ -25,17 +27,33 @@ class ChatPage extends ConsumerStatefulWidget {
 class _ChatPageState extends ConsumerState<ChatPage> {
   final ChatService chatService = ChatService();
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
-  String? _recordedAudioPath;
   final FlutterSoundPlayer _player = FlutterSoundPlayer();
+  String? _recordedAudioPath;
   bool _isPlaying = false;
   String? _currentlyPlayingUrl;
   bool _isRecording = false;
+  Map<String, Duration> audioDurations = {};
+  Map<String, Duration> audioPositions = {};
+    bool _isLoading = false;
+
 
   @override
   void initState() {
     super.initState();
     _initializeRecorder();
     _initializePlayer();
+        _preCacheAudioFiles();
+
+  }
+
+
+  Future<void> _preCacheAudioFiles() async {
+    final messages = await chatService.getInitialMessages(widget.chatRoomID);
+    for (var message in messages) {
+      if (message['type'] == 'voice') {
+        AudioCache.getCachedAudioPath(message['audioUrl']);
+      }
+    }
   }
 
   Future<void> _initializePlayer() async {
@@ -50,7 +68,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     await _recorder.openRecorder();
   }
 
-  Future<void> _playAudio(String url) async {
+ Future<void> _playAudio(String url) async {
+  setState(() {
+    _isLoading = true;
+  });
+
+  try {
     if (_isPlaying && url == _currentlyPlayingUrl) {
       await _player.stopPlayer();
       setState(() {
@@ -58,12 +81,13 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         _currentlyPlayingUrl = null;
       });
     } else {
+      final cachedPath = await AudioCache.getCachedAudioPath(url);
       setState(() {
         _isPlaying = true;
         _currentlyPlayingUrl = url;
       });
       await _player.startPlayer(
-        fromURI: url,
+        fromURI: cachedPath,
         whenFinished: () {
           setState(() {
             _isPlaying = false;
@@ -71,8 +95,21 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           });
         },
       );
+
+      // Track audio duration and position
+      _player.onProgress!.listen((event) {
+        setState(() {
+          audioDurations[url] = event.duration;
+          audioPositions[url] = event.position;
+        });
+      });
     }
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
   }
+}
 
   @override
   void dispose() {
@@ -117,7 +154,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: widget.receiverEmail,
+        title: widget.receiverName,
       ),
       body: Column(
         children: [
@@ -141,7 +178,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           }
 
           return ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            padding: EdgeInsets.all(15.h),
             children: snapshot.data!.docs
                 .map((doc) => _buildMessageItem(doc))
                 .toList(),
@@ -156,112 +193,63 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     if (data['type'] == 'voice') {
       return _buildVoiceMessageItem(data['audioUrl'], isCurrentUser);
     } else {
-      // Handle text messages as before
-      return ChatBubble(
-        message: data["message"],
-        isCurrentUser: isCurrentUser,
-      );
+      return _buildTextMessageItem(data['message'], isCurrentUser);
     }
   }
 
-  Widget _buildVoiceMessageItem(String audioUrl, bool isCurrentUser) {
-    bool isPlaying = _isPlaying && audioUrl == _currentlyPlayingUrl;
-
-    return Align(
-      alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        decoration: BoxDecoration(
-          color: isCurrentUser ? Colors.blue[100] : Colors.grey[300],
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-              onPressed: () => _playAudio(audioUrl),
-            ),
-            Text(
-              'Voice Message',
-              style: TextStyle(
-                fontFamily: 'NotoSans',
-                color: isCurrentUser ? Colors.blue[800] : Colors.black87,
-              ),
-            ),
-          ],
-        ),
+  Widget _buildTextMessageItem(String message, bool isCurrentUser) {
+    return BubbleNormal(
+      text: message,
+      isSender: isCurrentUser,
+      color: isCurrentUser ? const Color(0xFF1B97F3) : const Color(0xFFE8E8EE),
+      tail: true,
+      textStyle: TextStyle(
+        fontFamily: 'NotoSans',
+        color: isCurrentUser ? Colors.white : Colors.black87,
+        fontSize: 16,
       ),
     );
   }
 
-  Widget _buildVoiceInput() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onLongPress: _startRecording,
-              onLongPressEnd: (_) => _stopRecording(),
-              child: Container(
-                height: 50,
-                color: _isRecording
-                    ? Colors.red.withOpacity(0.2)
-                    : Colors.grey.withOpacity(0.2),
-                child: Center(
-                  child: Text(_isRecording ? 'Recording...' : 'Hold to record'),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+Widget _buildVoiceMessageItem(String audioUrl, bool isCurrentUser) {
+  bool isPlaying = _isPlaying && audioUrl == _currentlyPlayingUrl;
+  bool isLoading = _isLoading && audioUrl == _currentlyPlayingUrl;
+  double duration = audioDurations[audioUrl]?.inMilliseconds.toDouble() ?? 0.0;
+  double position = audioPositions[audioUrl]?.inMilliseconds.toDouble() ?? 0.0;
+
+  return BubbleNormalAudio(
+    duration: duration / 1000,
+    position: position / 1000,
+    isPlaying: isPlaying,
+    isLoading: isLoading,
+    isPause: !isPlaying && !isLoading,
+    onSeekChanged: (double value) {
+      final newPosition = Duration(milliseconds: (duration * value).toInt());
+      _player.seekToPlayer(newPosition);
+    },
+    onPlayPauseButtonClick: () => _playAudio(audioUrl),
+    color: isCurrentUser ? const Color(0xFF1B97F3) : const Color(0xFFE8E8EE),
+    isSender: isCurrentUser,
+  );
 }
 
-class ChatBubble extends StatelessWidget {
-  final String message;
-  final bool isCurrentUser;
-
-  const ChatBubble({
-    super.key,
-    required this.message,
-    required this.isCurrentUser,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        decoration: BoxDecoration(
-          color: isCurrentUser ? Colors.blue[100] : Colors.grey[300],
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          message,
-          style: TextStyle(
-            fontFamily: 'NotoSans',
-            color: isCurrentUser ? Colors.blue[800] : Colors.black87,
+  Widget _buildVoiceInput() {
+    return MessageBar(
+      onSend: (String message) async {
+        if (message.trim().isNotEmpty) {
+          await chatService.sendMessage(widget.chatRoomID, message);
+        }
+      },
+      actions: [
+        GestureDetector(
+          onLongPress: _startRecording,
+          onLongPressEnd: (_) => _stopRecording(),
+          child: Icon(
+            _isRecording ? Icons.mic : Icons.mic_none,
+            color: _isRecording ? Colors.red : Colors.black,
           ),
         ),
-      ),
+      ],
     );
   }
 }

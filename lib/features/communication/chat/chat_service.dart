@@ -14,6 +14,24 @@ class ChatService {
     return _auth.currentUser;
   }
 
+  Future<List<Map<String, dynamic>>> getInitialMessages(
+      String chatRoomID) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('chatrooms')
+          .doc(chatRoomID)
+          .collection('messages')
+          .orderBy('timestamp', descending: true)
+          .limit(20) // Adjust this number based on your needs
+          .get();
+
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      // print('Error getting initial messages: $e');
+      return [];
+    }
+  }
+
   // Initiate or get existing chat with product owner
   Future<String> initiateChatWithProductOwner(String ownerEmail) async {
     final currentUser = _auth.currentUser;
@@ -107,7 +125,7 @@ class ChatService {
 
         chatRooms.add({
           'chatRoomId': doc.id,
-          'otherUserName': otherUserData['name'] ?? 'Unknown',
+          'otherUserName': otherUserData['fullName'] ?? 'Unknown',
           'otherUserEmail': otherUserData['email'] ?? 'Unknown',
           'lastMessage': data['lastMessage'],
           'lastMessageTime': data['lastMessageTime'],

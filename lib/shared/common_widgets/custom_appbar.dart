@@ -1,9 +1,12 @@
 import 'package:farmlynco/core/constant/app_colors.dart';
+import 'package:farmlynco/helper/extensions/language_extension.dart';
+import 'package:farmlynco/shared/common_widgets/common_provider/language_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String title;
   final Widget? leading;
   final List<Widget>? actions;
@@ -20,14 +23,32 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
       title: CustomText(
         body: title,
         fontSize: 19,
         color: AppColors.primaryColor,
       ),
-      actions: actions,
+      actions: [
+        PopupMenuButton<String>(
+          icon: const Icon(
+            Icons.language_outlined,
+            color: AppColors.headerTitleColor,
+          ),
+          onSelected: (value) {
+            ref.read(currentLanguage.notifier).state = value;
+          },
+          itemBuilder: (BuildContext context) {
+            return TranslateString.supportedLanguages.entries.map((entry) {
+              return PopupMenuItem<String>(
+                value: entry.key,
+                child: Text(entry.value),
+              );
+            }).toList();
+          },
+        ),
+      ],
       leading: leading ??
           IconButton.filledTonal(
             color: Colors.white,

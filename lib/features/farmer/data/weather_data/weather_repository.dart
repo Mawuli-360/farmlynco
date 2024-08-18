@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:farmlynco/features/farmer/domain/weather_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -5,12 +7,13 @@ import 'dart:convert';
 
 class WeatherRepository {
   static const String _cacheKey = 'weather_insights';
-    static const String _sprayKey = 'spraying_fertilizer';
-
+  static const String _sprayKey = 'spraying_fertilizer';
 
   Future<WeatherInsights> fetchWeatherInsights(
-      Map<String, String> sensorData) async {
-    print("sensor data: $sensorData");
+    Map<String, String> sensorData, {
+    Duration timeout = const Duration(seconds: 15),
+    CancelToken? cancelToken,
+  }) async {
     final url =
         Uri.parse('https://newtonapi-f45t.onrender.com/overall-recommendation');
     final headers = {
@@ -18,26 +21,58 @@ class WeatherRepository {
       'Content-Type': 'application/x-www-form-urlencoded',
     };
 
-    try {
-      final response = await http.post(url, headers: headers, body: sensorData);
+    final client = http.Client();
+    final completer = Completer<WeatherInsights>();
+    Timer? timeoutTimer;
 
-      print(response.body);
+    try {
+      timeoutTimer = Timer(timeout, () {
+        if (!completer.isCompleted) {
+          client.close();
+          completer.completeError(TimeoutException('Request timed out'));
+        }
+      });
+
+      cancelToken?.whenCancel.then((_) {
+        if (!completer.isCompleted) {
+          client.close();
+          completer.completeError(CancelledException());
+        }
+      });
+
+      final response = await client
+          .post(
+            url,
+            headers: headers,
+            body: sensorData,
+          )
+          .timeout(timeout);
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         final insights = WeatherInsights.fromJson(jsonResponse);
         await _cacheInsights(insights);
-        return insights;
+        completer.complete(insights);
       } else {
         throw Exception('Failed to load weather insights');
       }
+    } on TimeoutException {
+      throw Exception('Request timed out. Please try again.');
     } catch (e) {
       throw Exception('Error: $e');
+    } finally {
+      timeoutTimer?.cancel();
+      client.close();
     }
+
+    return completer.future;
   }
 
-  Future<SprayInsights> fetchSprayAdvice(Map<String, String> sensorData) async {
-    print("sensor data: $sensorData");
+  Future<SprayInsights> fetchSprayAdvice(
+    Map<String, String> sensorData, {
+    Duration timeout = const Duration(seconds: 15),
+    CancelToken? cancelToken,
+  }) async {
     final url = Uri.parse(
         'https://newtonapi-f45t.onrender.com/spraying-or-fertilizer-advice');
     final headers = {
@@ -45,22 +80,51 @@ class WeatherRepository {
       'Content-Type': 'application/x-www-form-urlencoded',
     };
 
-    try {
-      final response = await http.post(url, headers: headers, body: sensorData);
+    final client = http.Client();
+    final completer = Completer<SprayInsights>();
+    Timer? timeoutTimer;
 
-      print(response.body);
+    try {
+      timeoutTimer = Timer(timeout, () {
+        if (!completer.isCompleted) {
+          client.close();
+          completer.completeError(TimeoutException('Request timed out'));
+        }
+      });
+
+      cancelToken?.whenCancel.then((_) {
+        if (!completer.isCompleted) {
+          client.close();
+          completer.completeError(CancelledException());
+        }
+      });
+
+      final response = await client
+          .post(
+            url,
+            headers: headers,
+            body: sensorData,
+          )
+          .timeout(timeout);
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         final insights = SprayInsights.fromJson(jsonResponse);
         await _cacheSprayInsights(insights);
-        return insights;
+        completer.complete(insights);
       } else {
-        throw Exception('Failed to load weather insights');
+        throw Exception('Failed to load spray advice');
       }
+    } on TimeoutException {
+      throw Exception('Request timed out. Please try again.');
     } catch (e) {
       throw Exception('Error: $e');
+    } finally {
+      timeoutTimer?.cancel();
+      client.close();
     }
+
+    return completer.future;
   }
 
   Future<void> _cacheSprayInsights(SprayInsights insights) async {
@@ -90,4 +154,18 @@ class WeatherRepository {
     }
     return null;
   }
+}
+
+class CancelToken {
+  final _completer = Completer<void>();
+  Future<void> get whenCancel => _completer.future;
+  void cancel() {
+    if (!_completer.isCompleted) _completer.complete();
+  }
+}
+
+class CancelledException implements Exception {
+  final String message = 'Request was cancelled';
+  @override
+  String toString() => message;
 }

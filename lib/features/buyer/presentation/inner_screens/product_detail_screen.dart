@@ -37,7 +37,7 @@ class ProductDetailScreen extends StatelessWidget {
                 Navigation.navigatePush(
                   ChatPage(
                     chatRoomID: chatRoomID,
-                    receiverEmail: product.productOwner,
+                    receiverName: product.productOwner,
                   ),
                 );
               },

@@ -3,8 +3,10 @@ import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_inner_screens/farm_edit_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_inner_screens/farmer_inner_screens_widgets.dart/responsive_gridview_item.dart';
 import 'package:farmlynco/features/farmer/presentation/farmers_providers/fetch_product.dart';
+import 'package:farmlynco/helper/extensions/language_extension.dart';
 import 'package:farmlynco/main.dart';
 import 'package:farmlynco/route/navigation.dart';
+import 'package:farmlynco/shared/common_widgets/common_provider/language_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/util/loading_overlay.dart';
@@ -59,6 +61,7 @@ class _FarmerMarketPlaceState extends ConsumerState<FarmerMarketPlace> {
     final countProduct = ref.watch(productCountProvider);
     final fetchProduct = ref.watch(fetchFarmerProductProvider);
     final screenWidth = MediaQuery.of(context).size.width;
+    final targetLanguage = ref.watch(currentLanguage);
 
     return Scaffold(
         appBar: CustomAppBar(
@@ -94,8 +97,8 @@ class _FarmerMarketPlaceState extends ConsumerState<FarmerMarketPlace> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const CustomText(
-                        body: 'Total product added',
+                      'Total product added'.translate(
+                        targetLanguage,
                         fontSize: 22,
                         color: AppColors.white,
                         fontWeight: FontWeight.w500,
@@ -116,11 +119,8 @@ class _FarmerMarketPlaceState extends ConsumerState<FarmerMarketPlace> {
                     if (data.isEmpty) {
                       return Expanded(
                         child: Center(
-                          child: Text(
-                            "NO PRODUCTS",
-                            style: TextStyle(fontSize: 16.sp),
-                          ),
-                        ),
+                            child: "NO PRODUCTS"
+                                .translate(targetLanguage, fontSize: 16)),
                       );
                     }
                     return Expanded(
@@ -144,8 +144,69 @@ class _FarmerMarketPlaceState extends ConsumerState<FarmerMarketPlace> {
                                     MaterialPageRoute(
                                         builder: (_) => FarmEditScreen(
                                             product: data[index]))),
-                                onDelete: () =>
-                                    deleteProduct(data[index].productId));
+                                onDelete: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Are you sure?'),
+                                      content: const CustomText(
+                                        body:
+                                            'Do you want to delete the product',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                      actions: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () =>
+                                                  Navigator.pop(context),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: const Color.fromARGB(
+                                                        255, 50, 110, 52),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.h)),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 45.h,
+                                                    vertical: 5.h),
+                                                child: const CustomText(
+                                                  body: "NO",
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 16),
+                                            GestureDetector(
+                                              onTap: () => deleteProduct(
+                                                  data[index].productId),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: const Color.fromARGB(
+                                                        255, 165, 32, 22),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.h)),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 45.h,
+                                                    vertical: 5.h),
+                                                child: const CustomText(
+                                                  body: "Yes",
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
                           }),
                     );
                   },

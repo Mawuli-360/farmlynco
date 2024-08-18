@@ -1,4 +1,3 @@
-import 'package:farmlynco/util/show_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -58,24 +57,20 @@ class FarmerIotScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              80.verticalSpace,
+              90.verticalSpace,
               Row(
                 children: [
                   12.horizontalSpace,
-                  IoTCard(
+                  const IoTCard(
                     readings: '36',
                     symbol: '°C',
                     name: 'Temperature',
                     image: AppImages.thermometer,
-                    onTap: () {
-                      showCustomBottomSheet(
-                          context, "data", "Weather Insights Result");
-                    },
                   ),
                   10.horizontalSpace,
                   const IoTCard(
                       readings: "10",
-                      symbol: "m3",
+                      symbol: "%",
                       name: "Humidity",
                       image: AppImages.moist),
                 ],
@@ -86,13 +81,13 @@ class FarmerIotScreen extends ConsumerWidget {
                   12.horizontalSpace,
                   const IoTCard(
                       readings: "10",
-                      symbol: "m3",
+                      symbol: "m/s",
                       name: "Wind Speed",
                       image: AppImages.windPower),
                   10.horizontalSpace,
                   const IoTCard(
                       readings: "10",
-                      symbol: "m3",
+                      symbol: "hPa",
                       name: "Pressure",
                       image: AppImages.pressure)
                 ],
@@ -112,78 +107,58 @@ class IoTCard extends StatelessWidget {
     required this.symbol,
     required this.name,
     required this.image,
-    this.onTap,
   });
 
   final String readings;
   final String symbol;
   final String name;
   final AssetImage image;
-  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        elevation: 6,
-        color: AppColors.appBgColor,
-        child: SizedBox(
-            height: 140.h,
-            width: 170.w,
-            child: Row(
-              children: [
-                6.horizontalSpace,
-                Image(
-                  image: image,
-                  height: 42.h,
-                ),
-                8.horizontalSpace,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    10.verticalSpace,
-                    Row(
-                      children: [
-                        CustomText(
-                          body: readings,
-                          fontSize: 40,
-                          color: AppColors.headerTitleColor,
-                        ),
-                        8.horizontalSpace,
-                        CustomText(
-                          body: symbol,
-                          fontSize: 25,
-                          color: AppColors.headerTitleColor,
-                        ),
-                      ],
-                    ),
-                    CustomText(
-                      body: name,
-                      fontSize: 16,
-                      color: AppColors.headerTitleColor,
-                    ),
-                    10.verticalSpace,
-                    Row(
-                      children: [
-                        const CustomText(
-                          body: "view more",
-                          fontSize: 13,
-                          color: Color.fromARGB(139, 0, 0, 0),
-                        ),
-                        4.horizontalSpace,
-                        const Icon(
-                          Icons.arrow_forward_ios_outlined,
-                          color: Color.fromARGB(139, 0, 0, 0),
-                          size: 14,
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ],
-            )),
-      ),
+    return Card(
+      elevation: 6,
+      color: AppColors.appBgColor,
+      child: SizedBox(
+          height: 110.h,
+          width: 170.w,
+          child: Row(
+            children: [
+              6.horizontalSpace,
+              Image(
+                image: image,
+                height: 42.h,
+              ),
+              8.horizontalSpace,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  10.verticalSpace,
+                  Row(
+                    children: [
+                      CustomText(
+                        body: readings,
+                        fontSize: 40,
+                        color: AppColors.headerTitleColor,
+                      ),
+                      8.horizontalSpace,
+                      CustomText(
+                        body: symbol,
+                        fontSize: 25,
+                        color: AppColors.headerTitleColor,
+                      ),
+                    ],
+                  ),
+                  CustomText(
+                    body: name,
+                    fontSize: 16,
+                    color: AppColors.headerTitleColor,
+                  ),
+                  10.verticalSpace,
+                ],
+              ),
+            ],
+          )),
     );
   }
 }

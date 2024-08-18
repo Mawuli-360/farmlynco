@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_home_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_iot_screen.dart';
@@ -36,7 +37,26 @@ class _FarmerLandingScreenState extends ConsumerState<FarmerLandingScreen> {
     ];
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: pages[currentPage],
+      body: PageTransitionSwitcher(
+        transitionBuilder: (
+          child,
+          primaryAnimation,
+          secondaryAnimation,
+        ) {
+          return FadeTransition(
+            opacity: primaryAnimation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0.2, 0),
+                end: Offset.zero,
+              ).animate(primaryAnimation),
+              child: child,
+            ),
+          );
+        },
+        duration: const Duration(milliseconds: 400),
+        child: pages[currentPage],
+      ),
       bottomNavigationBar: CurvedNavigationBar(
         color: AppColors.headerTitleColor,
         animationDuration: const Duration(milliseconds: 600),

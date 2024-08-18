@@ -2,8 +2,9 @@ import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/recommendation_card.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/spray_advice_card.dart';
-import 'package:farmlynco/features/farmer/presentation/weather/provider/weather_provider.dart';
+import 'package:farmlynco/helper/extensions/language_extension.dart';
 import 'package:farmlynco/main.dart';
+import 'package:farmlynco/shared/common_widgets/common_provider/language_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,8 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
 
   @override
   Widget build(BuildContext context) {
+    final targetLanguage = ref.watch(currentLanguage);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(
@@ -110,17 +113,9 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
                     title: "Weather Insights",
                   ),
                   20.verticalSpace,
-                  // const SprayAdviceCard(
-                  //   title: "Spraying or Fertilizer Advice",
-                  // )
-                  // RecommendatioCard(
-                  //   title: 'Spraying and Fertilizer Advice',
-                  //   response:
-                  //       'Select your favorite social network and share our icons with your contacts or friends. If you don’t have these social networks, simply copy the link and paste it in the one you use.',
-                  //   onTap: () {
-                  //     showCustomBottomSheet(context, "data");
-                  //   },
-                  // ),
+                  const SprayingAdviceCard(
+                    title: "Spraying or Fertilizer Advice",
+                  )
                 ],
               ),
             ),
@@ -136,16 +131,16 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
                   height: 60.h,
                 ),
                 10.horizontalSpace,
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomText(
-                      body: "Device Location",
+                    "Device Location".translate(
+                      targetLanguage,
                       color: AppColors.white,
                       fontSize: 24,
                       fontWeight: FontWeight.w500,
                     ),
-                    CustomText(
+                    const CustomText(
                       body: "Borteyman, Accra",
                       color: AppColors.white,
                       fontSize: 20,

@@ -1,5 +1,7 @@
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/features/farmer/presentation/weather/provider/weather_provider.dart';
+import 'package:farmlynco/helper/extensions/language_extension.dart';
+import 'package:farmlynco/shared/common_widgets/common_provider/language_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/util/custom_loading_scale.dart';
 import 'package:farmlynco/util/show_bottom_sheet.dart';
@@ -20,25 +22,24 @@ class RecommendationCard extends ConsumerStatefulWidget {
 }
 
 class _RecommendationCardState extends ConsumerState<RecommendationCard> {
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() => _setupSensorDataListener());
-  }
-
-  void _setupSensorDataListener() {
-    ref.listen<AsyncValue<Map<String, String>>>(
-      sensorDataStreamProvider,
-      (_, next) => next.whenData((sensorData) {
-        print("HEREEEE IS THE SENSOR DATA: $sensorData");
-        ref.read(weatherInsightsProvider.notifier).fetchInsights(sensorData);
-      }),
-    );
+  void _retryFetchInsights() {
+    final sensorData = ref.read(sensorDataStreamProvider).value;
+    if (sensorData != null) {
+      ref.read(weatherInsightsProvider.notifier).fetchInsights(sensorData);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<Map<String, String>>>(
+      sensorDataStreamProvider,
+      (_, next) => next.whenData((sensorData) {
+        ref.read(weatherInsightsProvider.notifier).fetchInsights(sensorData);
+      }),
+    );
+
     final weatherInsights = ref.watch(weatherInsightsProvider);
+    final targetLanguage = ref.watch(currentLanguage);
 
     return GestureDetector(
       onTap: () {
@@ -76,19 +77,39 @@ class _RecommendationCardState extends ConsumerState<RecommendationCard> {
             9.verticalSpace,
             weatherInsights.when(
               data: (insights) {
-                return CustomText(
-                  body: insights.insights,
+                return insights.insights.translate(
+                  targetLanguage,
                   fontSize: 15,
                   maxLines: 3,
                   textOverflow: TextOverflow.ellipsis,
                 );
               },
               loading: () => const CustomLoadingScale(),
-              error: (error, _) => CustomText(
-                body: "Error: $error",
-                fontSize: 15,
-                maxLines: 3,
-                textOverflow: TextOverflow.ellipsis,
+              error: (error, _) => Column(
+                children: [
+                  const CustomText(
+                    body:
+                        "Unable to load weather insights. Please retry again.",
+                    fontSize: 14,
+                    maxLines: 2,
+                    textOverflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                  10.verticalSpace,
+                  ElevatedButton(
+                    onPressed: _retryFetchInsights,
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.headerTitleColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.h))),
+                    child: const CustomText(
+                      body: 'Retry',
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

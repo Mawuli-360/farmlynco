@@ -304,21 +304,16 @@ class AuthRepository {
       try {
         final GoogleSignInAuthentication googleAuth =
             await googleUser.authentication;
-        print("Successfully got googleAuth");
 
         final credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
 
-        print("Created credential");
-
         // Sign in to Firebase
         final UserCredential userCredential =
             await _auth.signInWithCredential(credential);
         final User? user = userCredential.user;
-
-        print("Successfully signed in to Firebase");
 
         if (user != null) {
           // Prepare user data
@@ -343,27 +338,14 @@ class AuthRepository {
           showToast("Failed to get user information from Firebase");
         }
       } catch (e) {
-        if (e is PlatformException) {
-          print("Error code: ${e.code}");
-          print("Error message: ${e.message}");
-          print("Error details: ${e.details}");
-        }
-        print("Error during Google authentication: $e");
+        if (e is PlatformException) {}
         showToast("Error during Google authentication: ${e.toString()}");
       }
-    } on SocketException catch (e) {
-      print("SocketException: $e");
+    } on SocketException catch (_) {
       showToast('Please check your internet connection.');
-    } on TimeoutException catch (e) {
-      print("TimeoutException: $e");
+    } on TimeoutException catch (_) {
       showToast('Request failed. Please try again later');
     } catch (e) {
-      if (e is PlatformException) {
-        print("Error code: ${e.code}");
-        print("Error message: ${e.message}");
-        print("Error details: ${e.details}");
-      }
-      print("Unexpected error: $e");
       showToast('Failed to sign in with Google: ${e.toString()}');
     } finally {
       _loadingOverlay.hide();

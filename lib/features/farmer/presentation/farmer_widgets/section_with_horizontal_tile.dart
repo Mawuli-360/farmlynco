@@ -1,12 +1,14 @@
 import 'package:farmlynco/features/buyer/presentation/inner_screens/read_detail_screen.dart';
+import 'package:farmlynco/helper/extensions/language_extension.dart';
 import 'package:farmlynco/route/navigation.dart';
-import 'package:farmlynco/shared/common_widgets/custom_text.dart';
+import 'package:farmlynco/shared/common_widgets/common_provider/language_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:html/parser.dart' show parse;
 
-class FarmerCard extends StatelessWidget {
+class FarmerCard extends ConsumerWidget {
   const FarmerCard({
     super.key,
     required this.image,
@@ -17,13 +19,14 @@ class FarmerCard extends StatelessWidget {
   final String content;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final document = parse(content);
     final paragraphs = document.getElementsByTagName('p');
+    final targetLanguage = ref.watch(currentLanguage);
     final String plainText = paragraphs.isNotEmpty
         ? paragraphs.map((element) => element.text).join(' ')
         : '';
-        
+
     return GestureDetector(
       onTap: () => Navigation.navigatePush(ReadDetailScreen(
         image: image,
@@ -56,20 +59,19 @@ class FarmerCard extends StatelessWidget {
                       image: CachedNetworkImageProvider(image))),
             ),
             Container(
-              height: 110.h,
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 4.h),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.h),
-              ),
-              child: CustomText(
-                body: plainText,
-                maxLines: 4,
-                fontSize: 14,
-                top: 8.h,
-                textOverflow: TextOverflow.ellipsis,
-              ),
-            ),
+                height: 110.h,
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 4.h),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.h),
+                ),
+                child: plainText.translate(
+                  targetLanguage,
+                  maxLines: 4,
+                  fontSize: 14,
+                  top: 8.h,
+                  textOverflow: TextOverflow.ellipsis,
+                )),
           ],
         ),
       ),

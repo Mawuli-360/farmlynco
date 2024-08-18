@@ -8,14 +8,6 @@ import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // final chatService = ChatService();
-  // chatService.updateUserStatus(true);
-  // SystemChannels.lifecycle.setMessageHandler((msg) {
-  //   if (msg == AppLifecycleState.detached.toString()) {
-  //     chatService.updateUserStatus(false);
-  //   }
-  //   return Future.value(null);
-  // });
   runApp(
     const ProviderScope(
       child: Farmlynco(),

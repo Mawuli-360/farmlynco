@@ -3,8 +3,10 @@ import 'package:farmlynco/features/farmer/presentation/farmer_widgets/farmer_wea
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/section_with_horizontal_tile.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/tip_section.dart';
 import 'package:farmlynco/features/farmer/presentation/farmers_providers/fetch_diseases_provider.dart';
+import 'package:farmlynco/helper/extensions/language_extension.dart';
 import 'package:farmlynco/main.dart';
 import 'package:farmlynco/route/navigation.dart';
+import 'package:farmlynco/shared/common_widgets/common_provider/language_provider.dart';
 import 'package:farmlynco/shared/common_widgets/common_provider/news_provider.dart';
 import 'package:farmlynco/shared/common_widgets/common_provider/user_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
@@ -39,6 +41,26 @@ class FarmerHomeScreen extends ConsumerWidget {
             surfaceTintColor: AppColors.headerTitleColor,
             backgroundColor: AppColors.headerTitleColor,
             elevation: 5,
+            actions: [
+              PopupMenuButton<String>(
+                icon: const Icon(
+                  Icons.language_outlined,
+                  color: AppColors.white,
+                ),
+                onSelected: (value) {
+                  ref.read(currentLanguage.notifier).state = value;
+                },
+                itemBuilder: (BuildContext context) {
+                  return TranslateString.supportedLanguages.entries
+                      .map((entry) {
+                    return PopupMenuItem<String>(
+                      value: entry.key,
+                      child: Text(entry.value),
+                    );
+                  }).toList();
+                },
+              ),
+            ],
             leading: IconButton(
               onPressed: () {
                 drawerController.toggle?.call();
@@ -126,12 +148,7 @@ class FarmerHomeScreen extends ConsumerWidget {
                     loading: () => const Center(
                           child: CircularProgressIndicator(),
                         )),
-                // SectionWithHorizontalScrollCard(
-                //   sectionName: 'Trending Diseases',
-                //   onPressed: () => Navigation.openFarmerDiseaseScreen(),
-                //   content: '',
-                //   image: '',
-                // ),
+             
                 40.verticalSpace,
               ],
             ),

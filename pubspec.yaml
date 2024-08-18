@@ -30,6 +30,7 @@ environment:
 dependencies:
   animations: ^2.0.11
   bubble: ^1.2.1
+  chat_bubbles: ^1.6.0
   cached_network_image: ^3.3.1
   carousel_slider: ^4.2.1
   cloud_firestore: ^5.1.0
@@ -76,6 +77,7 @@ dependencies:
   skeletonizer: ^1.2.0
   speech_to_text: ^6.6.2
   animated_text_kit: ^4.2.2
+  translator: ^1.0.0
 
 dev_dependencies:
   build_runner: ^2.4.9

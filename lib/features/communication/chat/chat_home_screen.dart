@@ -1,11 +1,12 @@
 import 'package:farmlynco/features/communication/chat/chat_page.dart';
 import 'package:farmlynco/route/navigation.dart';
+import 'package:farmlynco/util/custom_loading_scale.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:farmlynco/features/communication/chat/chat_service.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatHomeScreen extends ConsumerWidget {
   ChatHomeScreen({super.key});
@@ -29,7 +30,15 @@ class ChatHomeScreen extends ConsumerWidget {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CustomText(body: "Loading...");
+            return Expanded(
+              child: Column(
+                children: [
+                  const CustomLoadingScale(),
+                  10.verticalSpace,
+                  const CustomText(body: "Loading..."),
+                ],
+              ),
+            );
           }
 
           return ListView(
@@ -41,20 +50,21 @@ class ChatHomeScreen extends ConsumerWidget {
         });
   }
 
-Widget _buildChatRoomListItem(Map<String, dynamic> chatRoomData, BuildContext context) {
-  return UserTile(
-    text: chatRoomData['otherUserName'] ?? chatRoomData['otherUserEmail'],
-    lastMessage: chatRoomData['lastMessage'],
-    lastMessageTime: chatRoomData['lastMessageTime']?.toDate(),
-    isOnline: chatRoomData['isOnline'],
-    onTap: () {
-      Navigation.navigatePush(ChatPage(
-        chatRoomID: chatRoomData['chatRoomId'],
-        receiverEmail: chatRoomData['otherUserEmail'],
-      ));
-    },
-  );
-}
+  Widget _buildChatRoomListItem(
+      Map<String, dynamic> chatRoomData, BuildContext context) {
+    return UserTile(
+      text: chatRoomData['otherUserName'] ?? chatRoomData['otherUserEmail'],
+      lastMessage: chatRoomData['lastMessage'],
+      lastMessageTime: chatRoomData['lastMessageTime']?.toDate(),
+      isOnline: chatRoomData['isOnline'],
+      onTap: () {
+        Navigation.navigatePush(ChatPage(
+          chatRoomID: chatRoomData['chatRoomId'],
+          receiverName: chatRoomData['otherUserName'],
+        ));
+      },
+    );
+  }
 }
 
 class UserTile extends ConsumerWidget {
@@ -98,16 +108,18 @@ class UserTile extends ConsumerWidget {
           ],
         ),
         title: CustomText(body: text),
-        subtitle: lastMessage != null 
-          ? CustomText(body: lastMessage!, fontSize: 12) 
-          : null,
+        subtitle: lastMessage != null
+            ? CustomText(body: lastMessage!, fontSize: 12)
+            : null,
         trailing: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (lastMessageTime != null)
               CustomText(body: _formatDate(lastMessageTime!), fontSize: 10),
             if (isOnline == false && lastMessageTime != null)
-              CustomText(body: 'Last seen: ${_formatDate(lastMessageTime!)}', fontSize: 10),
+              CustomText(
+                  body: 'Last seen: ${_formatDate(lastMessageTime!)}',
+                  fontSize: 10),
           ],
         ),
       ),
