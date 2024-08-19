@@ -87,9 +87,8 @@ class _RecommendationCardState extends ConsumerState<RecommendationCard> {
               loading: () => const CustomLoadingScale(),
               error: (error, _) => Column(
                 children: [
-                  const CustomText(
-                    body:
-                        "Unable to load weather insights. Please retry again.",
+                  CustomText(
+                    body: error.toString(),
                     fontSize: 14,
                     maxLines: 2,
                     textOverflow: TextOverflow.ellipsis,

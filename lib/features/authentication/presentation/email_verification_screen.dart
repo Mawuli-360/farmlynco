@@ -43,6 +43,7 @@ class _EmailVerificationScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SizedBox(
         width: double.infinity,
         height: 1.sh,

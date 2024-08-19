@@ -138,8 +138,9 @@ class _BuyerSearchScreenState extends ConsumerState<BuyerSearchScreen> {
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                 mainAxisSpacing: 20.h,
-                                childAspectRatio: 0.86,
+                                childAspectRatio: 0.78.h,
                                 crossAxisCount: 2,
+                                crossAxisSpacing: 10.h
                               ),
                               itemBuilder: (_, index) {
                                 final product = searchResult[index];
@@ -170,7 +171,6 @@ class _BuyerSearchScreenState extends ConsumerState<BuyerSearchScreen> {
                                       ),
                                     ));
                               },
-                            
                               itemCount: searchResult.length,
                               shrinkWrap: true,
                             ),

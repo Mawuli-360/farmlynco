@@ -53,7 +53,7 @@ class TipSection extends StatelessWidget {
                     const CustomText(
                       body:
                           "Optimize water usage with precision\nirrigation systems, ensuring each plant receives the right amount",
-                      fontSize: 13.5,
+                      fontSize: 12,
                     ),
                   ],
                 ),

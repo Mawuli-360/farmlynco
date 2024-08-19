@@ -113,6 +113,8 @@ class _RegistrationSectionState extends ConsumerState<_RegistrationSection> {
     Reference referenceRoot = FirebaseStorage.instance.ref();
     Reference referenceDirImages = referenceRoot.child('farmers_profile');
     Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
+    
+    
     try {
       await referenceImageToUpload.putFile(_imageFile!);
       String imageUrl = await referenceImageToUpload.getDownloadURL();

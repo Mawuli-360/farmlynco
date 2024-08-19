@@ -10,6 +10,7 @@ import 'package:farmlynco/shared/common_widgets/primary_button.dart';
 import 'package:farmlynco/util/loading_overlay.dart';
 import 'package:farmlynco/util/show_toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -98,7 +99,15 @@ class _RegistrationSectionState extends ConsumerState<_RegistrationSection> {
 
     loadingOverlay.show(context);
 
+    String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference referenceRoot = FirebaseStorage.instance.ref();
+    Reference referenceDirImages = referenceRoot.child('farmers_profile');
+    Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
+
     try {
+      await referenceImageToUpload.putFile(_imageFile!);
+      String imageUrl = await referenceImageToUpload.getDownloadURL();
+
       final UserCredential userCredential =
           await auth.createUserWithEmailAndPassword(
         email: email,
@@ -111,6 +120,7 @@ class _RegistrationSectionState extends ConsumerState<_RegistrationSection> {
         'fullName': fullName,
         'email': email,
         'role': "Buyer",
+        'imageUrl': imageUrl,
       };
 
       await firestore.collection('users').doc(user!.uid).set(userRecord);

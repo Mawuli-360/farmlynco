@@ -30,25 +30,26 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
         fontSize: 19,
         color: AppColors.primaryColor,
       ),
-      actions: [
-        PopupMenuButton<String>(
-          icon: const Icon(
-            Icons.language_outlined,
-            color: AppColors.headerTitleColor,
-          ),
-          onSelected: (value) {
-            ref.read(currentLanguage.notifier).state = value;
-          },
-          itemBuilder: (BuildContext context) {
-            return TranslateString.supportedLanguages.entries.map((entry) {
-              return PopupMenuItem<String>(
-                value: entry.key,
-                child: Text(entry.value),
-              );
-            }).toList();
-          },
-        ),
-      ],
+      actions: actions ??
+          [
+            PopupMenuButton<String>(
+              icon: const Icon(
+                Icons.language_outlined,
+                color: AppColors.headerTitleColor,
+              ),
+              onSelected: (value) {
+                ref.read(currentLanguage.notifier).state = value;
+              },
+              itemBuilder: (BuildContext context) {
+                return TranslateString.supportedLanguages.entries.map((entry) {
+                  return PopupMenuItem<String>(
+                    value: entry.key,
+                    child: Text(entry.value),
+                  );
+                }).toList();
+              },
+            ),
+          ],
       leading: leading ??
           IconButton.filledTonal(
             color: Colors.white,

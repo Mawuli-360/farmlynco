@@ -9,6 +9,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CustomSliverAppBar extends ConsumerWidget {
   const CustomSliverAppBar({super.key});
 
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return "Good morning";
+    } else if (hour < 17) {
+      return "Good afternoon";
+    } else {
+      return "Good evening";
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userDetailsProvider);
@@ -40,7 +51,7 @@ class CustomSliverAppBar extends ConsumerWidget {
                       padding: EdgeInsets.only(left: 12.h),
                       child: CustomText(
                         body:
-                            "Good afternoon, ${user?.name.split(' ')[0] ?? "User"}",
+                            "${_getGreeting()}, ${user?.name.split(' ')[0] ?? "User"}",
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
                         color: const Color.fromARGB(255, 26, 98, 86),
@@ -74,6 +85,7 @@ class CustomSliverAppBar extends ConsumerWidget {
   }
 }
 
+// The _SearchProductForm class remains unchanged
 class _SearchProductForm extends StatelessWidget {
   const _SearchProductForm();
 
@@ -99,8 +111,9 @@ class _SearchProductForm extends StatelessWidget {
           onTap: () => Navigation.openSearchScreen(),
           child: AbsorbPointer(
             child: TextFormField(
-              decoration: const InputDecoration(
-                prefixIcon: Icon(
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.only(top: 12.h),
+                prefixIcon: const Icon(
                   Icons.search,
                   color: AppColors.primaryColor,
                 ),

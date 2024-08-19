@@ -27,7 +27,7 @@ void showExitDialog(bool didPop, BuildContext context) {
                 decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 50, 110, 52),
                     borderRadius: BorderRadius.circular(10.h)),
-                padding: EdgeInsets.symmetric(horizontal: 45.h, vertical: 5.h),
+                padding: EdgeInsets.symmetric(horizontal: 35.h, vertical: 5.h),
                 child: const CustomText(
                   body: "NO",
                   color: Colors.white,
@@ -35,14 +35,13 @@ void showExitDialog(bool didPop, BuildContext context) {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
             GestureDetector(
               onTap: () => SystemNavigator.pop(),
               child: Container(
                 decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 165, 32, 22),
                     borderRadius: BorderRadius.circular(10.h)),
-                padding: EdgeInsets.symmetric(horizontal: 45.h, vertical: 5.h),
+                padding: EdgeInsets.symmetric(horizontal: 35.h, vertical: 5.h),
                 child: const CustomText(
                   body: "Yes",
                   color: Colors.white,

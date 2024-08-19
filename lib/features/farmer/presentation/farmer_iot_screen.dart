@@ -58,17 +58,16 @@ class FarmerIotScreen extends ConsumerWidget {
                 ),
               ),
               90.verticalSpace,
-              Row(
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  12.horizontalSpace,
-                  const IoTCard(
+                  IoTCard(
                     readings: '36',
                     symbol: '°C',
                     name: 'Temperature',
                     image: AppImages.thermometer,
                   ),
-                  10.horizontalSpace,
-                  const IoTCard(
+                  IoTCard(
                       readings: "10",
                       symbol: "%",
                       name: "Humidity",
@@ -76,16 +75,15 @@ class FarmerIotScreen extends ConsumerWidget {
                 ],
               ),
               20.verticalSpace,
-              Row(
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  12.horizontalSpace,
-                  const IoTCard(
+                  IoTCard(
                       readings: "10",
                       symbol: "m/s",
                       name: "Wind Speed",
                       image: AppImages.windPower),
-                  10.horizontalSpace,
-                  const IoTCard(
+                  IoTCard(
                       readings: "10",
                       symbol: "hPa",
                       name: "Pressure",

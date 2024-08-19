@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:farmlynco/core/constant/app_colors.dart';
+import 'package:iconsax/iconsax.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final bool isViewStore;
@@ -53,13 +54,17 @@ class ProductDetailScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const CustomText(
-                      body: "Whatsapp",
+                      body: "Chat",
                       fontSize: 18,
                       color: AppColors.primaryColor,
                       fontWeight: FontWeight.bold,
                     ),
                     10.horizontalSpace,
-                    AppImages.whatsapp
+                    Icon(
+                      Iconsax.message,
+                      color: AppColors.primaryColor,
+                      size: 30.h,
+                    ),
                   ],
                 ),
               ),

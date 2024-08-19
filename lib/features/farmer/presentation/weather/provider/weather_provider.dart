@@ -26,15 +26,14 @@ class WeatherInsightsNotifier
 
   Future<void> fetchInsights(Map<String, String> sensorData) async {
     state = const AsyncValue.loading();
-    final cancelToken = CancelToken();
 
     try {
-      final insights = await _repository.fetchWeatherInsights(sensorData,
-          timeout: const Duration(seconds: 60), cancelToken: cancelToken);
+      final insights = await _repository.fetchWeatherInsights(
+        sensorData,
+      );
       state = AsyncValue.data(insights);
     } catch (e) {
-      state = AsyncValue.error(
-          'Failed to fetch insights: ${e.toString()}', StackTrace.current);
+      state = AsyncValue.error(e.toString(), StackTrace.current);
     }
   }
 }
@@ -55,18 +54,15 @@ class SprayInsightsNotifier extends StateNotifier<AsyncValue<SprayInsights>> {
 
   Future<void> fetchSprayAdvice(Map<String, String> sensorData) async {
     state = const AsyncValue.loading();
-    final cancelToken = CancelToken();
 
     try {
       final insights = await _repository.fetchSprayAdvice(
         sensorData,
         timeout: const Duration(seconds: 60),
-        cancelToken: cancelToken,
       );
       state = AsyncValue.data(insights);
     } catch (e) {
-      state = AsyncValue.error(
-          'Failed to fetch spray advice: ${e.toString()}', StackTrace.current);
+      state = AsyncValue.error(e.toString(), StackTrace.current);
     }
   }
 }
@@ -87,7 +83,7 @@ final sprayInsightsProvider =
 
 final sensorDataStreamProvider = StreamProvider<Map<String, String>>((ref) {
   // Replace this with your actual sensor data stream
-  return Stream.periodic(const Duration(minutes: 5), (_) {
+  return Stream.periodic(const Duration(minutes: 2), (_) {
     return {
       'temperature': '${14.0 + Random().nextDouble() * 2}',
       'humidity': '${13.0 + Random().nextDouble() * 2}',

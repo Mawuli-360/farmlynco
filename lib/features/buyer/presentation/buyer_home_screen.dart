@@ -34,42 +34,38 @@ class BuyerHomeContent extends StatelessWidget {
     return CustomScrollView(slivers: [
       const CustomSliverAppBar(),
       SliverToBoxAdapter(
-        child: Skeletonizer(
-          enabled: false,
-          ignoreContainers: true,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              30.verticalSpace,
-              const CustomText(
-                body: "Top Offers",
-                fontWeight: FontWeight.w500,
-                color: AppColors.headerTitleColor,
-                bottom: 10,
-                left: 15,
-              ),
-              2.verticalSpace,
-              const NewsCarousel(),
-              18.verticalSpace,
-              const HorizontalScrollProductWithTitle(),
-              25.verticalSpace,
-              const TipOfTheDayCard(
-                  tip:
-                      "Noticed something isn't quite right? Report the issue through our feedback form so we can look into it. Thank you 🙂"),
-              15.verticalSpace,
-              const CustomText(
-                body: "Best Sellers",
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: AppColors.headerTitleColor,
-                bottom: 10,
-                left: 15,
-                top: 10,
-              ),
-              const _SellerAppreciationSection(),
-              35.verticalSpace,
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            30.verticalSpace,
+            const CustomText(
+              body: "Top Offers",
+              fontWeight: FontWeight.w500,
+              color: AppColors.headerTitleColor,
+              bottom: 10,
+              left: 15,
+            ),
+            2.verticalSpace,
+            const NewsCarousel(),
+            18.verticalSpace,
+            const HorizontalScrollProductWithTitle(),
+            25.verticalSpace,
+            const TipOfTheDayCard(
+                tip:
+                    "Noticed something isn't quite right? Report the issue through our feedback form so we can look into it. Thank you 🙂"),
+            15.verticalSpace,
+            const CustomText(
+              body: "Best Sellers",
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: AppColors.headerTitleColor,
+              bottom: 10,
+              left: 15,
+              top: 10,
+            ),
+            const _SellerAppreciationSection(),
+            35.verticalSpace,
+          ],
         ),
       ),
     ]);

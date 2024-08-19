@@ -83,7 +83,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
                           loading: () => const CustomLoadingScale(),
                           error: (error, _) => Column(
                             children: [
-                              "Unable to load weather insights. Please retry again."
+                              error.toString()
                                   .translate(
                                 targetLanguage,
                                 fontSize: 14,
