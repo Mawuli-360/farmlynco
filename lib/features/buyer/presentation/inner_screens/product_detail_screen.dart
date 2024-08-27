@@ -1,4 +1,3 @@
-import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/buyer/presentation/inner_screens/view_store_detail_screen.dart';
 import 'package:farmlynco/features/communication/chat/chat_page.dart';
 import 'package:farmlynco/features/communication/chat/chat_service.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final bool isViewStore;
@@ -19,6 +19,14 @@ class ProductDetailScreen extends StatelessWidget {
 
   const ProductDetailScreen(
       {super.key, required this.isViewStore, required this.product});
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launchUrl(launchUri);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,30 +77,36 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Container(
-              width: 180.w,
-              height: 50.h,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(118, 25, 163, 140),
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(20.r)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.call_outlined,
-                    color: AppColors.primaryColor,
-                    size: 30.h,
-                  ),
-                  10.horizontalSpace,
-                  const CustomText(
-                    body: "Call",
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryColor,
-                  ),
-                  10.horizontalSpace,
-                ],
+            GestureDetector(
+              onTap: () {
+                _makePhoneCall(product.userPhoneNumber);
+              },
+              child: Container(
+                width: 180.w,
+                height: 50.h,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(118, 25, 163, 140),
+                  borderRadius:
+                      BorderRadius.only(topLeft: Radius.circular(20.r)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.call_outlined,
+                      color: AppColors.primaryColor,
+                      size: 30.h,
+                    ),
+                    10.horizontalSpace,
+                    const CustomText(
+                      body: "Call",
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryColor,
+                    ),
+                    10.horizontalSpace,
+                  ],
+                ),
               ),
             ),
           ],

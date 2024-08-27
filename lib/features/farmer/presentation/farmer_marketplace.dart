@@ -182,8 +182,11 @@ class _FarmerMarketPlaceState extends ConsumerState<FarmerMarketPlace> {
                                             ),
                                             const SizedBox(height: 16),
                                             GestureDetector(
-                                              onTap: () => deleteProduct(
-                                                  data[index].productId),
+                                              onTap: () {
+                                                deleteProduct(
+                                                    data[index].productId);
+                                                Navigator.pop(context);
+                                              },
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                     color: const Color.fromARGB(

@@ -17,9 +17,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
 
 class FarmerCropDoctor extends ConsumerWidget {
   const FarmerCropDoctor({super.key});
@@ -27,6 +25,7 @@ class FarmerCropDoctor extends ConsumerWidget {
   Future<void> _pickImageAndUpload(BuildContext context, WidgetRef ref) async {
     final ImagePicker picker = ImagePicker();
     final LoadingOverlay loadingOverlay = LoadingOverlay();
+
     final XFile? image = await showDialog<XFile>(
       context: context,
       builder: (BuildContext context) {
@@ -63,7 +62,16 @@ class FarmerCropDoctor extends ConsumerWidget {
 
         File file = File(image.path);
         if (await file.exists()) {
-          String diagnosis = await _uploadImage(file.path);
+          String diagnosis = await ref
+              .read(cropDiagnosisProvider.notifier)
+              .uploadImage(file.path);
+
+          // Check if the request was cancelled
+          if (diagnosis == 'Request was cancelled') {
+            loadingOverlay.hide();
+            return;
+          }
+
           String formattedDiagnosis = formatDiagnosisAsMarkdown(diagnosis);
 
           ref
@@ -130,34 +138,6 @@ class FarmerCropDoctor extends ConsumerWidget {
     }
   }
 
-  Future<String> _uploadImage(String imagePath) async {
-    var url =
-        Uri.parse('https://newtonapi-f45t.onrender.com/analyze-rice-leaf');
-
-    try {
-      var request = http.MultipartRequest('POST', url);
-      request.files.add(await http.MultipartFile.fromPath('file', imagePath));
-
-      var streamedResponse = await request.send();
-      var response = await http.Response.fromStream(streamedResponse);
-
-      if (response.statusCode == 200) {
-        return json.decode(response.body)['suggestions'];
-      } else {
-        return 'Failed to get diagnosis';
-      }
-    } on SocketException catch (_) {
-      return "Network connection is bad";
-    } on TimeoutException catch (_) {
-      return "Request timeout please try again later";
-    } catch (e) {
-      return 'Error: $e';
-    }
-    // catch (e) {
-    //   return 'Error: $e';
-    // }
-  }
-
   String formatDiagnosisAsMarkdown(String rawDiagnosis) {
     return '''
 $rawDiagnosis
@@ -166,22 +146,27 @@ $rawDiagnosis
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-        appBar: CustomAppBar(
-          title: "Crop Doctor",
-          actions: [
-            IconButton(
-              icon: const Icon(
-                Icons.history,
-                color: AppColors.primaryColor,
+    return PopScope(
+      onPopInvoked: (didPop){
+          ref.read(cropDiagnosisProvider.notifier).cancelOngoingRequest();
+      },
+      child: Scaffold(
+          appBar: CustomAppBar(
+            title: "Crop Doctor",
+            actions: [
+              IconButton(
+                icon: const Icon(
+                  Icons.history,
+                  color: AppColors.primaryColor,
+                ),
+                onPressed: () {
+                  Navigation.navigatePush(const DiagnosisHistory());
+                },
               ),
-              onPressed: () {
-                Navigation.navigatePush(const DiagnosisHistory());
-              },
-            ),
-          ],
-        ),
-        body: _buildInitialContent(context, ref));
+            ],
+          ),
+          body: _buildInitialContent(context, ref)),
+    );
   }
 
   SizedBox _buildInitialContent(BuildContext context, WidgetRef ref) {

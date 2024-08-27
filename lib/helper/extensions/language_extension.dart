@@ -6,7 +6,7 @@ extension TranslateString on String {
   static final supportedLanguages = {
     'en': 'English',
     'ee': 'Ewe',
-    'ak': 'Twi',
+    'ak': 'Akan',
   };
 
   Future<String> _translate(String targetLanguage) async {

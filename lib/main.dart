@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:device_preview/device_preview.dart';
 import 'package:farmlynco/app.dart';
 import 'package:farmlynco/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,8 +18,8 @@ void main() {
       ),
     );
   }, (Object error, StackTrace stack) {
-    print('Caught error: $error');
-    print(stack);
+    // print('Caught error: $error');
+    // print(stack);
   });
 }
 

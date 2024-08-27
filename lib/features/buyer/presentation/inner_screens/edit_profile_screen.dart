@@ -3,6 +3,7 @@ import 'package:farmlynco/shared/common_widgets/app_form_field.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/primary_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:farmlynco/util/show_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,11 +13,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 
+
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
+   ConsumerState<ConsumerStatefulWidget>  createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
@@ -73,9 +75,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         await user.verifyBeforeUpdateEmail(_emailController.text);
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully')),
-      );
+      showToast('Profile updated successfully');
     }
   }
 

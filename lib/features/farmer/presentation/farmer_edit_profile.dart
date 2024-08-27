@@ -3,6 +3,7 @@ import 'package:farmlynco/shared/common_widgets/app_form_field.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/primary_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:farmlynco/util/show_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,7 +17,7 @@ class FarmerEditProfileScreen extends ConsumerStatefulWidget {
   const FarmerEditProfileScreen({super.key});
 
   @override
-  _FarmerEditProfileScreenState createState() =>
+  ConsumerState<ConsumerStatefulWidget> createState() =>
       _FarmerEditProfileScreenState();
 }
 
@@ -75,9 +76,7 @@ class _FarmerEditProfileScreenState
         await user.verifyBeforeUpdateEmail(_emailController.text);
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully')),
-      );
+      showToast('Profile updated successfully');
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:farmlynco/features/authentication/presentation/farmer_registrati
 import 'package:farmlynco/features/authentication/presentation/login_screen.dart';
 import 'package:farmlynco/features/authentication/presentation/registration_screen.dart';
 import 'package:farmlynco/features/authentication/presentation/reset_password_screen.dart';
+import 'package:farmlynco/features/authentication/presentation/waiting_screen.dart';
 import 'package:farmlynco/features/buyer/presentation/buyer_home_screen.dart';
 import 'package:farmlynco/features/buyer/presentation/buyer_landing_screen.dart';
 import 'package:farmlynco/features/buyer/presentation/buyer_setting_screen.dart';
@@ -18,14 +19,12 @@ import 'package:farmlynco/features/buyer/presentation/inner_screens/products_scr
 import 'package:farmlynco/features/farmer/presentation/chat_ai/ai_assistant_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/crop_doctor/farmer_crop_doctor.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_home_screen.dart';
-import 'package:farmlynco/features/farmer/presentation/farmer_inner_screens/add_product_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_inner_screens/farm_add_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_inner_screens/farmer_disease_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_iot_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_landing_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_main_screen.dart';
 import 'package:farmlynco/features/farmer/presentation/weather/farmer_weather_screen.dart';
-import 'package:farmlynco/features/farmer/presentation/store_setup/store_setup.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/shared/common_widgets/slide_page_animation.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +46,7 @@ class Navigation {
   static const String registrationScreen = "/registrationScreen";
   static const String resetPasswordScreen = "/resetPasswordScreen";
   static const String buyerRegistrationScreen = "/buyerRegistrationScreen";
+  static const String waitingScreen = "/waitingScreen";
 
   //---------------------------------------------------------------------//
   //                BUYER SCREENS  PATH STRINGS                          //
@@ -111,6 +111,8 @@ class Navigation {
         return openRoute(widget: const ResetPasswordScreen());
       case buyerRegistrationScreen:
         return openRoute(widget: const BuyerRegistrationScreen());
+      case waitingScreen:
+        return openRoute(widget: const WaitingScreen());
 
       //---------------------------------------------------------------------//
       //                        BUYER SCREENS                                //
@@ -161,12 +163,10 @@ class Navigation {
         return openRoute(widget: const FarmerWeatherScreen());
       case farmerChatBotScreen:
         return openRoute(widget: const AssistantScreen());
-      case farmerStoreSetup:
-        return openRoute(widget: const StoreSetup());
+      // case farmerStoreSetup:
+      //   return openRoute(widget: const StoreSetup());
       case farmerDiseaseScreen:
         return openRoute(widget: const FarmerDiseaseScreen());
-      case farmerAddProductScreen:
-        return openRoute(widget: const AddProductScreen());
       case addProductScreen:
         return openRoute(widget: const FarmAddScreen());
       case farmerCropDoctor:

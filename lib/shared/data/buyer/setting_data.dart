@@ -14,7 +14,7 @@ class BuyerSettingData {
     SettingData(
       title: "Chat Room",
       leadingIcon: Icons.chat,
-      onTap: () => Navigation.navigatePush(ChatHomeScreen()),
+      onTap: () => Navigation.navigatePush(const ChatHomeScreen()),
     ),
     // SettingData(
     //   title: "Change your language",

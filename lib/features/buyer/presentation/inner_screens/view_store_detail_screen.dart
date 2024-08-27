@@ -33,7 +33,7 @@ class _ViewStoreDetailScreenState extends ConsumerState<ViewStoreDetailScreen> {
         child: Column(
           children: [
             _ViewStoreHeader(widget.product.profilePic),
-            _ViewStoreContent(productModel: widget.product,choices: choices),
+            _ViewStoreContent(productModel: widget.product, choices: choices),
           ],
         ),
       ),
@@ -42,7 +42,8 @@ class _ViewStoreDetailScreenState extends ConsumerState<ViewStoreDetailScreen> {
 }
 
 class _ViewStoreContent extends ConsumerWidget {
-  const _ViewStoreContent({ required this.productModel, 
+  const _ViewStoreContent({
+    required this.productModel,
     required this.choices,
   });
 
@@ -51,7 +52,8 @@ class _ViewStoreContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productList = ref.watch(fetchProductForBuyersProvider(productModel.userId));
+    final productList =
+        ref.watch(fetchProductForBuyersProvider(productModel.userId));
     final bookmarkedItems = ref.watch(favoriteProvider);
 
     return Expanded(
@@ -147,17 +149,17 @@ class _ViewStoreContent extends ConsumerWidget {
                   ],
                 ),
                 10.verticalSpace,
-                Container(
-                  padding: EdgeInsets.all(8.r),
-                  decoration: BoxDecoration(
-                      color: const Color.fromARGB(57, 95, 180, 249),
-                      borderRadius: BorderRadius.circular(5.r)),
-                  child: const CustomText(
-                    body:
-                        'Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame ',
-                    fontSize: 14,
-                  ),
-                ),
+                // Container(
+                //   padding: EdgeInsets.all(8.r),
+                //   decoration: BoxDecoration(
+                //       color: const Color.fromARGB(57, 95, 180, 249),
+                //       borderRadius: BorderRadius.circular(5.r)),
+                //   child: const CustomText(
+                //     body:
+                //         'Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame ',
+                //     fontSize: 14,
+                //   ),
+                // ),
                 20.verticalSpace,
                 const CustomText(
                   body: "Products",

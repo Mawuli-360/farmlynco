@@ -1,4 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
+
+import 'package:farmlynco/core/services/messaging_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/features/authentication/data/auth_repository.dart';
@@ -11,15 +20,14 @@ import 'package:farmlynco/shared/common_widgets/primary_button.dart';
 import 'package:farmlynco/util/loading_overlay.dart';
 import 'package:farmlynco/util/show_exit_dialog.dart';
 import 'package:farmlynco/util/show_toast.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
 
 class FarmRegistrationScreen extends ConsumerWidget {
-  const FarmRegistrationScreen({super.key});
+  const FarmRegistrationScreen({
+    super.key,
+    // required this.formData,
+  });
+
+  // final StoreSetupFormData formData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,7 +49,11 @@ class FarmRegistrationScreen extends ConsumerWidget {
 }
 
 class _RegistrationSection extends ConsumerStatefulWidget {
-  const _RegistrationSection();
+  const _RegistrationSection(
+      // this.formData,
+      );
+
+  // final StoreSetupFormData formData;
 
   @override
   ConsumerState<_RegistrationSection> createState() =>
@@ -113,8 +125,7 @@ class _RegistrationSectionState extends ConsumerState<_RegistrationSection> {
     Reference referenceRoot = FirebaseStorage.instance.ref();
     Reference referenceDirImages = referenceRoot.child('farmers_profile');
     Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
-    
-    
+
     try {
       await referenceImageToUpload.putFile(_imageFile!);
       String imageUrl = await referenceImageToUpload.getDownloadURL();
@@ -134,8 +145,15 @@ class _RegistrationSectionState extends ConsumerState<_RegistrationSection> {
         'phoneNumber': phoneNumber,
         'role': "Farmer",
         'storeName': storeName,
-        // 'storeDescription': storeDescrip,
         'imageUrl': imageUrl,
+        'isApproved': false,
+        // 'storeDetails': {
+        //   'identityNumber': widget.formData.identityNumber,
+        //   'identityType': widget.formData.identityType,
+        //   'description': widget.formData.storeDescription,
+        //   'farmLocation': widget.formData.storeLocation,
+        //   'productCategory': widget.formData.selectedCategories
+        // }
       };
 
       await firestore.collection('users').doc(user.uid).set(userRecord);
@@ -149,6 +167,7 @@ class _RegistrationSectionState extends ConsumerState<_RegistrationSection> {
           EmailVerificationScreen(currentUser!, auth));
 
       loadingOverlay.hide();
+      await MessagingService().subscribeToTopic('newUserSignups');
 
       for (var controller in [
         fullNameController,
@@ -319,7 +338,6 @@ class _RegistrationSectionState extends ConsumerState<_RegistrationSection> {
                               )
                             ],
                           )),
-                
                 25.verticalSpace,
                 PrimaryButton(
                   onTap: () {

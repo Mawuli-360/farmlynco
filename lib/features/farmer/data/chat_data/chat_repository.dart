@@ -30,7 +30,8 @@ class ChatRepository {
     await prefs.remove(_messagesKey);
   }
 
-  Future<String> fetchChatResponse(String messageText) async {
+  Future<String> 
+  fetchChatResponse(String messageText) async {
     try {
       final response = await http
           .post(

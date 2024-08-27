@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:farmlynco/features/farmer/data/weather_data/weather_repository.dart';
 import 'package:farmlynco/features/farmer/domain/weather_model.dart';
@@ -83,12 +82,12 @@ final sprayInsightsProvider =
 
 final sensorDataStreamProvider = StreamProvider<Map<String, String>>((ref) {
   // Replace this with your actual sensor data stream
-  return Stream.periodic(const Duration(minutes: 2), (_) {
+  return Stream.periodic(const Duration(minutes: 1), (_) {
     return {
-      'temperature': '${14.0 + Random().nextDouble() * 2}',
-      'humidity': '${13.0 + Random().nextDouble() * 2}',
-      'windspeed': '${14.0 + Random().nextDouble() * 2}',
-      'pressure': '${60.0 + Random().nextDouble() * 2}',
+      'temperature': '29',
+      'humidity': '80',
+      'windspeed': '5',
+      'pressure': '1013.25',
     };
   });
 });

@@ -145,12 +145,14 @@ class _LoginSectionState extends ConsumerState<_LoginSection> {
                             return;
                           }
 
-                          ref
-                              .read(authRepositoryProvider)
-                              // .handleAuthentication(role, context);
-                              .signInWithEmailAndPassword(
-                                  email: emailController.text,
-                                  password: passwordController.text);
+                          ref.read(authRepositoryProvider).handleAuthentication(
+                              role,
+                              context,
+                              emailController.text,
+                              passwordController.text);
+                          // .signInWithEmailAndPassword(
+                          //     email: emailController.text,
+                          //     password: passwordController.text);
                         },
                         text: "Login",
                         textColor: Colors.white,

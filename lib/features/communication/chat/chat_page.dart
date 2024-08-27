@@ -1,4 +1,5 @@
 import 'package:chat_bubbles/chat_bubbles.dart';
+import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/communication/chat/chat_service.dart';
 import 'package:farmlynco/features/communication/chat/model/audio_cache.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
@@ -34,18 +35,15 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   bool _isRecording = false;
   Map<String, Duration> audioDurations = {};
   Map<String, Duration> audioPositions = {};
-    bool _isLoading = false;
-
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _initializeRecorder();
     _initializePlayer();
-        _preCacheAudioFiles();
-
+    _preCacheAudioFiles();
   }
-
 
   Future<void> _preCacheAudioFiles() async {
     final messages = await chatService.getInitialMessages(widget.chatRoomID);
@@ -68,48 +66,48 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     await _recorder.openRecorder();
   }
 
- Future<void> _playAudio(String url) async {
-  setState(() {
-    _isLoading = true;
-  });
+  Future<void> _playAudio(String url) async {
+    setState(() {
+      _isLoading = true;
+    });
 
-  try {
-    if (_isPlaying && url == _currentlyPlayingUrl) {
-      await _player.stopPlayer();
-      setState(() {
-        _isPlaying = false;
-        _currentlyPlayingUrl = null;
-      });
-    } else {
-      final cachedPath = await AudioCache.getCachedAudioPath(url);
-      setState(() {
-        _isPlaying = true;
-        _currentlyPlayingUrl = url;
-      });
-      await _player.startPlayer(
-        fromURI: cachedPath,
-        whenFinished: () {
-          setState(() {
-            _isPlaying = false;
-            _currentlyPlayingUrl = null;
-          });
-        },
-      );
-
-      // Track audio duration and position
-      _player.onProgress!.listen((event) {
+    try {
+      if (_isPlaying && url == _currentlyPlayingUrl) {
+        await _player.stopPlayer();
         setState(() {
-          audioDurations[url] = event.duration;
-          audioPositions[url] = event.position;
+          _isPlaying = false;
+          _currentlyPlayingUrl = null;
         });
+      } else {
+        final cachedPath = await AudioCache.getCachedAudioPath(url);
+        setState(() {
+          _isPlaying = true;
+          _currentlyPlayingUrl = url;
+        });
+        await _player.startPlayer(
+          fromURI: cachedPath,
+          whenFinished: () {
+            setState(() {
+              _isPlaying = false;
+              _currentlyPlayingUrl = null;
+            });
+          },
+        );
+
+        // Track audio duration and position
+        _player.onProgress!.listen((event) {
+          setState(() {
+            audioDurations[url] = event.duration;
+            audioPositions[url] = event.position;
+          });
+        });
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
       });
     }
-  } finally {
-    setState(() {
-      _isLoading = false;
-    });
   }
-}
 
   @override
   void dispose() {
@@ -156,11 +154,15 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       appBar: CustomAppBar(
         title: widget.receiverName,
       ),
-      body: Column(
-        children: [
-          Expanded(child: _buildMessageList()),
-          _buildVoiceInput(),
-        ],
+      body: Container(
+        decoration: const BoxDecoration(
+            image: DecorationImage(image: AppImages.sa, fit: BoxFit.fill)),
+        child: Column(
+          children: [
+            Expanded(child: _buildMessageList()),
+            _buildVoiceInput(),
+          ],
+        ),
       ),
     );
   }
@@ -211,27 +213,29 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     );
   }
 
-Widget _buildVoiceMessageItem(String audioUrl, bool isCurrentUser) {
-  bool isPlaying = _isPlaying && audioUrl == _currentlyPlayingUrl;
-  bool isLoading = _isLoading && audioUrl == _currentlyPlayingUrl;
-  double duration = audioDurations[audioUrl]?.inMilliseconds.toDouble() ?? 0.0;
-  double position = audioPositions[audioUrl]?.inMilliseconds.toDouble() ?? 0.0;
+  Widget _buildVoiceMessageItem(String audioUrl, bool isCurrentUser) {
+    bool isPlaying = _isPlaying && audioUrl == _currentlyPlayingUrl;
+    bool isLoading = _isLoading && audioUrl == _currentlyPlayingUrl;
+    double duration =
+        audioDurations[audioUrl]?.inMilliseconds.toDouble() ?? 0.0;
+    double position =
+        audioPositions[audioUrl]?.inMilliseconds.toDouble() ?? 0.0;
 
-  return BubbleNormalAudio(
-    duration: duration / 1000,
-    position: position / 1000,
-    isPlaying: isPlaying,
-    isLoading: isLoading,
-    isPause: !isPlaying && !isLoading,
-    onSeekChanged: (double value) {
-      final newPosition = Duration(milliseconds: (duration * value).toInt());
-      _player.seekToPlayer(newPosition);
-    },
-    onPlayPauseButtonClick: () => _playAudio(audioUrl),
-    color: isCurrentUser ? const Color(0xFF1B97F3) : const Color(0xFFE8E8EE),
-    isSender: isCurrentUser,
-  );
-}
+    return BubbleNormalAudio(
+      duration: duration / 1000,
+      position: position / 1000,
+      isPlaying: isPlaying,
+      isLoading: isLoading,
+      isPause: !isPlaying && !isLoading,
+      onSeekChanged: (double value) {
+        final newPosition = Duration(milliseconds: (duration * value).toInt());
+        _player.seekToPlayer(newPosition);
+      },
+      onPlayPauseButtonClick: () => _playAudio(audioUrl),
+      color: isCurrentUser ? const Color(0xFF1B97F3) : const Color(0xFFE8E8EE),
+      isSender: isCurrentUser,
+    );
+  }
 
   Widget _buildVoiceInput() {
     return MessageBar(

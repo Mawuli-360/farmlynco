@@ -66,6 +66,7 @@ class RegistrationScreen extends ConsumerWidget {
                       final index = selectIndex;
 
                       if (index == 0) {
+                        // Navigation.navigatePush(const StoreSetup());
                         Navigation.navigateTo(
                             Navigation.farmerRegistrationScreen);
                       } else {

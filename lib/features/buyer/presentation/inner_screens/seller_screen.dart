@@ -100,7 +100,7 @@ class _SellerBody extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(5.r)),
                         child: const CustomText(
                           body:
-                              'Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame Lorem ipsum dolor sit ame ',
+                              'Farm trader focused on sourcing high-quality produce and building strong relationships for a fair and efficient farm-to-table supply chain.',
                           fontSize: 14,
                         ),
                       ),
@@ -196,124 +196,124 @@ class _SellerInfoCard extends StatelessWidget {
 
   final FarmerUser user;
 
-@override
-Widget build(BuildContext context) {
-  return Positioned(
-    top: 90.h,
-    left: 0.04.sw,
-    right: 0.04.sw,
-    height: 0.20.sh,
-    child: Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            boxShadow: [
-              BoxShadow(
-                color: const Color.fromARGB(89, 158, 158, 158),
-                spreadRadius: 1.h,
-                blurRadius: 2.h,
-                offset: const Offset(0, 2),
-              ),
-            ],
-            borderRadius: BorderRadius.circular(10.r),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.mail, color: AppColors.green),
-                  10.horizontalSpace,
-                  CustomText(body: user.email, fontSize: 15),
-                ],
-              ),
-              10.verticalSpace,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.call, color: AppColors.green),
-                  10.horizontalSpace,
-                  CustomText(body: user.phoneNumber, fontSize: 15),
-                ],
-              ),
-              25.verticalSpace,
-            ],
-          ),
-        ),
-        Positioned(
-          left: 0.5.sw - 70.h,
-          top: -60.h,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: Colors.black,
-                    leading: IconButton(
-                      onPressed: () => Navigation.pop(),
-                      icon: Icon(
-                        Icons.arrow_back_ios_new_outlined,
-                        color: Colors.white,
-                        size: 22.h,
-                      ),
-                    ),
-                  ),
-                  extendBody: true,
-                  extendBodyBehindAppBar: true,
-                  body: PhotoView(
-                    imageProvider: CachedNetworkImageProvider(user.imageUrl),
-                    minScale: PhotoViewComputedScale.contained,
-                    maxScale: PhotoViewComputedScale.covered * 2,
-                    backgroundDecoration: const BoxDecoration(
-                      color: Colors.black,
-                    ),
-                  ),
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 90.h,
+      left: 0.04.sw,
+      right: 0.04.sw,
+      height: 0.20.sh,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color.fromARGB(89, 158, 158, 158),
+                  spreadRadius: 1.h,
+                  blurRadius: 2.h,
+                  offset: const Offset(0, 2),
                 ),
-              ));
-            },
-            child: Stack(
-              alignment: Alignment.center,
+              ],
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Container(
-                  height: 120.h,
-                  width: 120.h,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.mail, color: AppColors.green),
+                    10.horizontalSpace,
+                    CustomText(body: user.email, fontSize: 15),
+                  ],
                 ),
-                Container(
-                  height: 100.h,
-                  width: 100.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(
-                        user.imageUrl,
-                      ),
-                    ),
-                  ),
+                10.verticalSpace,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.call, color: AppColors.green),
+                    10.horizontalSpace,
+                    CustomText(body: user.phoneNumber, fontSize: 15),
+                  ],
                 ),
-                Positioned(
-                  bottom: 5.h,
-                  right: 15.h,
-                  child: Icon(
-                    Icons.verified,
-                    color: Colors.blue,
-                    size: 26.h,
-                  ),
-                ),
+                25.verticalSpace,
               ],
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+          Positioned(
+            left: 0.5.sw - 70.h,
+            top: -60.h,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: Colors.black,
+                      leading: IconButton(
+                        onPressed: () => Navigation.pop(),
+                        icon: Icon(
+                          Icons.arrow_back_ios_new_outlined,
+                          color: Colors.white,
+                          size: 22.h,
+                        ),
+                      ),
+                    ),
+                    extendBody: true,
+                    extendBodyBehindAppBar: true,
+                    body: PhotoView(
+                      imageProvider: CachedNetworkImageProvider(user.imageUrl),
+                      minScale: PhotoViewComputedScale.contained,
+                      maxScale: PhotoViewComputedScale.covered * 2,
+                      backgroundDecoration: const BoxDecoration(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ));
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    height: 120.h,
+                    width: 120.h,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Container(
+                    height: 100.h,
+                    width: 100.h,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: CachedNetworkImageProvider(
+                          user.imageUrl,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 5.h,
+                    right: 15.h,
+                    child: Icon(
+                      Icons.verified,
+                      color: Colors.blue,
+                      size: 26.h,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

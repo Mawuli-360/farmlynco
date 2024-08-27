@@ -149,7 +149,8 @@ class FarmerMenuScreen extends ConsumerWidget {
                 menu: "Chat Room",
                 onTap: () {
                   drawerController.close?.call()?.then(
-                        (value) => Navigation.navigatePush(ChatHomeScreen()),
+                        (value) =>
+                            Navigation.navigatePush(const ChatHomeScreen()),
                       );
                 },
               ),

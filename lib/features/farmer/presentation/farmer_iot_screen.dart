@@ -62,13 +62,13 @@ class FarmerIotScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   IoTCard(
-                    readings: '36',
+                    readings: '29',
                     symbol: '°C',
                     name: 'Temperature',
                     image: AppImages.thermometer,
                   ),
                   IoTCard(
-                      readings: "10",
+                      readings: "80",
                       symbol: "%",
                       name: "Humidity",
                       image: AppImages.moist),
@@ -79,12 +79,12 @@ class FarmerIotScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   IoTCard(
-                      readings: "10",
+                      readings: "5.0",
                       symbol: "m/s",
                       name: "Wind Speed",
                       image: AppImages.windPower),
                   IoTCard(
-                      readings: "10",
+                      readings: "1013.25",
                       symbol: "hPa",
                       name: "Pressure",
                       image: AppImages.pressure)
@@ -136,13 +136,13 @@ class IoTCard extends StatelessWidget {
                     children: [
                       CustomText(
                         body: readings,
-                        fontSize: 40,
+                        fontSize: 25,
                         color: AppColors.headerTitleColor,
                       ),
                       8.horizontalSpace,
                       CustomText(
                         body: symbol,
-                        fontSize: 25,
+                        fontSize: 10,
                         color: AppColors.headerTitleColor,
                       ),
                     ],

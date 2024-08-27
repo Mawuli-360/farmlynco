@@ -1,13 +1,89 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/shared/common_widgets/primary_button.dart';
+import 'package:farmlynco/util/custom_loading_scale.dart';
+import 'package:farmlynco/util/show_toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
-class HelpCenterScreen extends StatelessWidget {
+class HelpCenterScreen extends ConsumerStatefulWidget {
   const HelpCenterScreen({super.key});
+
+  @override
+  ConsumerState<HelpCenterScreen> createState() => _HelpCenterScreenState();
+}
+
+class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
+  final TextEditingController controller = TextEditingController();
+  bool isSubmitting = false;
+
+  Future<void> submitReport() async {
+    if (controller.text.isEmpty) {
+      showToast("Report field cannot be empty");
+      return;
+    }
+
+    setState(() {
+      isSubmitting = true;
+    });
+
+    try {
+      // Get the current user
+      var user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        // Fetch user info from 'users' collection
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          Map<String, dynamic> userData =
+              userDoc.data() as Map<String, dynamic>;
+
+          // Create a map of the report data
+          Map<String, dynamic> reportData = {
+            'message': controller.text,
+            'userId': user.uid,
+            'fullName': userData['fullName'] ?? 'Unknown',
+            'email': userData['email'] ?? 'Unknown',
+            'phone': userData['phoneNumber'] ?? 'Unknown',
+            'role': userData['role'] ?? 'Unknown',
+            'timestamp': FieldValue.serverTimestamp(),
+          };
+
+          // Add the report to Firestore
+          await FirebaseFirestore.instance.collection('help').add(reportData);
+          setState(() {
+            isSubmitting = false;
+          });
+          showToast("Report submitted successfully");
+          controller.clear();
+        } else {
+          setState(() {
+            isSubmitting = false;
+          });
+          showToast("User information not found");
+        }
+      } else {
+        setState(() {
+          isSubmitting = false;
+        });
+        showToast("User not logged in");
+      }
+    } catch (e) {
+      setState(() {
+        isSubmitting = false;
+      });
+      showToast("Error submitting report: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +110,7 @@ class HelpCenterScreen extends StatelessWidget {
                 ),
                 20.verticalSpace,
                 TextFormField(
+                  controller: controller,
                   minLines: 5,
                   maxLines: 6,
                   cursorColor: AppColors.green,
@@ -46,11 +123,13 @@ class HelpCenterScreen extends StatelessWidget {
                   ),
                 ),
                 40.verticalSpace,
-                PrimaryButton(
-                  onTap: () {},
-                  text: "Submit report",
-                  textColor: Colors.white,
-                ),
+                isSubmitting
+                    ? const CustomLoadingScale()
+                    : PrimaryButton(
+                        onTap: submitReport,
+                        text: "Submit report",
+                        textColor: Colors.white,
+                      ),
                 20.verticalSpace,
               ],
             ),

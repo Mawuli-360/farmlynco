@@ -26,6 +26,24 @@ class _NewsCarouselState extends ConsumerState<NewsCarousel>
     super.initState();
   }
 
+  List<Map<String, String>> data = [
+    {
+      'image':
+          'https://www.ghanaiantimes.com.gh/wp-content/uploads/2022/08/Farmers-with-their-harvested-Cocoa.jpg',
+      'text': 'Embrace agriculture'
+    },
+    {
+      'image':
+          'https://www.graphic.com.gh/images/2018/dec/6/woman_ghana_news_compressed.jpg',
+      'text': 'Happy farming !!!'
+    },
+    {
+      'image':
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdsAZa-5nXhfeywpxla03CuQQWJ1bD5NnHNw&s',
+      'text': 'Fresh farm produce'
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -37,21 +55,20 @@ class _NewsCarouselState extends ConsumerState<NewsCarousel>
             height: 160.h,
             child: CarouselSlider(
               carouselController: carouselController,
-              items: List.generate(4, (index) {
+              items: List.generate(data.length, (index) {
                 return Builder(builder: (BuildContext context) {
                   return ImageViewHelper.show(
                       context: context,
-                      url:
-                          "https://www.ghanaiantimes.com.gh/wp-content/uploads/2022/08/Farmers-with-their-harvested-Cocoa.jpg",
+                      url: data[index]['image']!,
                       child: Align(
                         alignment: Alignment.bottomLeft,
                         child: Padding(
                           padding: EdgeInsets.only(
                               left: 8.h, right: 8.h, bottom: 10.h),
-                          child: const SizedBox(
+                          child: SizedBox(
                             width: double.infinity,
                             child: CustomText(
-                              body: "Welcome to agriculture",
+                              body: data[index]['text']!,
                               fontSize: 18,
                               color: Colors.white,
                               fontWeight: FontWeight.w500,

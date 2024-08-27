@@ -37,53 +37,70 @@ class AuthRepository {
   User? get currentUser => _auth.currentUser;
 
   Future<void> handleAuthentication(
-      String selectedRole, BuildContext context) async {
-    bool isAuthSuccessful = await authenticateUser(selectedRole, _ref);
+      String selectedRole, BuildContext context,String email, String password) async {
+    try {
+      bool isAuthSuccessful = await authenticateUser(selectedRole, _ref,email,password);
 
-    if (isAuthSuccessful) {
-      if (currentUser != null && currentUser!.emailVerified) {
-        // User is authenticated and the selected role matches
-        String uid = currentUser!.uid;
-        DocumentSnapshot userSnapshot =
-            await _firebaseFirestore.collection('users').doc(uid).get();
+      if (isAuthSuccessful) {
+        if (currentUser != null && currentUser!.emailVerified) {
+          // User is authenticated and the selected role matches
+          String uid = currentUser!.uid;
+          DocumentSnapshot userSnapshot =
+              await _firebaseFirestore.collection('users').doc(uid).get();
 
-        if (userSnapshot.exists) {
-          Map<String, dynamic> userData =
-              userSnapshot.data() as Map<String, dynamic>;
-          String role = userData['role'];
+          if (userSnapshot.exists) {
+            Map<String, dynamic> userData =
+                userSnapshot.data() as Map<String, dynamic>;
+            String role = userData['role'];
+            bool isApproved =
+                userData['isApproved'] ?? false; // Default to false if not set
 
-          if (role == 'Buyer') {
-            Navigation.navigateReplace(Navigation.buyerLandingScreen);
-          } else if (role == 'Farmer') {
-            Navigation.navigateReplace(Navigation.farmerMainScreen);
+            if (isApproved) {
+              // User is approved, navigate to appropriate screen
+              if (role == 'Buyer') {
+                Navigation.navigateReplace(Navigation.buyerLandingScreen);
+              } else if (role == 'Farmer') {
+                Navigation.navigateReplace(Navigation.farmerMainScreen);
+              }
+            } else {
+              // User is not approved, navigate to waiting screen
+              Navigation.navigateReplace(
+                  Navigation.waitingScreen); // You need to define this route
+            }
+          } else {
+            // User document not found in Firestore
+            showToast('User document not found');
           }
+        } else if (currentUser != null && !currentUser!.emailVerified) {
+          Navigation.navigateReplacement(
+              EmailVerificationScreen(currentUser!, _auth));
         } else {
-          // User document not found in Firestore
-          showToast('User document not found');
+          // User is not authenticated or the selected role doesn't match
+          showToast('Authentication this failed');
         }
-      }
-      if (currentUser != null && !currentUser!.emailVerified) {
-        Navigation.navigateReplacement(
-            EmailVerificationScreen(currentUser!, _auth));
       } else {
-        // User is not authenticated or the selected role doesn't match
-        // showToast(context, 'Authentication failed');
+        // Authentication failed
+        showToast('Authentication here failed');
       }
-    } else {
-      // Authentication failed
-
-      showToast('Authentication failed');
+    } catch (e) {
+      // print("Exception in handleAuthentication: $e"); // Add this line
+      showToast('Authentication error: $e');
     }
   }
 
-  Future<bool> authenticateUser(String selectedRole, Ref ref) async {
-    final String email = ref.read(emailProvider.notifier).state.trim();
-    final String password = ref.read(passwordProvider.notifier).state.trim();
+  Future<bool> authenticateUser(
+      String selectedRole, Ref ref, String email, String password) async {
+    // final String email = ref.read(emailProvider.notifier).state.trim();
+    // final String password = ref.read(passwordProvider.notifier).state.trim();
     ref.read(isLoginLoading.notifier).state = true;
 
     try {
+      // print("Attempting to sign in with email: $email"); // Add this line
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+          email: email.trim(), password: password.trim());
+
+      // print("Sign in successful, checking user data"); // Add this line
+
       String uid = userCredential.user!.uid;
       DocumentSnapshot userSnapshot =
           await _firebaseFirestore.collection('users').doc(uid).get();
@@ -93,6 +110,9 @@ class AuthRepository {
             userSnapshot.data() as Map<String, dynamic>;
         String role = userData['role'];
 
+        // print(
+        //     "User role: $role, Selected role: $selectedRole"); // Add this line
+
         // Check if the selected role matches the user's role
         if (role == selectedRole) {
           // Authentication successful
@@ -100,18 +120,20 @@ class AuthRepository {
           return true;
         } else {
           // Roles don't match, show an error message
+          // print("Role mismatch"); // Add this line
           showToast('Selected role does not match user role');
           ref.read(isLoginLoading.notifier).state = false;
           await _auth.signOut();
-
           return false;
         }
       } else {
+        // print("User document not found"); // Add this line
         showToast('User not found');
         ref.read(isLoginLoading.notifier).state = false;
         return false;
       }
     } catch (e) {
+      // print("Error in authenticateUser: $e"); // Add this line
       ref.read(isLoginLoading.notifier).state = false;
       return false;
     }

@@ -141,7 +141,7 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
                       fontWeight: FontWeight.w500,
                     ),
                     const CustomText(
-                      body: "Borteyman, Accra",
+                      body: "Tarkwa Nsuaem",
                       color: AppColors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.w500,

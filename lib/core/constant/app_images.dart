@@ -34,6 +34,7 @@ class AppImages {
   static const location = AssetImage("assets/images/location.png");
   static const pressure = AssetImage("assets/images/pressure.png");
   static const windPower = AssetImage("assets/images/wind-power.png");
+  static const waiting = AssetImage("assets/images/waiting.png");
 
   //-------------------------------------------------------------------------//
   //                             JPG IMAGES                                  //
@@ -47,6 +48,8 @@ class AppImages {
       AssetImage('assets/images/weatherBackground.jpg');
   static const AssetImage oyingbo = AssetImage('assets/images/oyingbo.jpg');
   static const AssetImage chatBackground = AssetImage("assets/images/chB.jpg");
+  static const AssetImage sa = AssetImage('assets/images/sa.jpg');
+
 
   //-------------------------------------------------------------------------//
   //                             SVG FILES                                   //

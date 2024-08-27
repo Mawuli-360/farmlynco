@@ -28,27 +28,27 @@ final fetchProductsProvider = StreamProvider<List<ProductModel>>((ref) {
       snapshot.docs.map((doc) => ProductModel.fromSnapshot(doc)).toList());
 });
 
-// final selectedProductsProvider =
-//     StreamProvider.family<List<ProductModel>, String>((ref, filter) {
-//   final firestore = ref.watch(firebaseFirestoreProvider);
+final selectedProductsProvider =
+    StreamProvider.family<List<ProductModel>, String>((ref, filter) {
+  final firestore = ref.watch(firebaseFirestoreProvider);
 
-//   // Check if the filter is "all" or a specific category
-//   final collection = (filter.toLowerCase() == 'all')
-//       ? firestore.collection("products").snapshots()
-//       : firestore
-//           .collection("products")
-//           .where("category", isEqualTo: filter.toLowerCase())
-//           .snapshots();
+  // Check if the filter is "all" or a specific category
+  final collection = (filter.toLowerCase() == 'all')
+      ? firestore.collection("products").snapshots()
+      : firestore
+          .collection("products")
+          .where("category", isEqualTo: filter.toLowerCase())
+          .snapshots();
 
-//   return collection.map((querySnapshot) {
-//     final products = querySnapshot.docs
-//         .map((doc) => ProductModel.fromSnapshot(doc))
-//         .toList();
+  return collection.map((querySnapshot) {
+    final products = querySnapshot.docs
+        .map((doc) => ProductModel.fromSnapshot(doc))
+        .toList();
 
-//     if (filter.toLowerCase() != 'all') {
-//       products.shuffle();
-//     }
+    if (filter.toLowerCase() != 'all') {
+      products.shuffle();
+    }
 
-//     return products;
-//   });
-// });
+    return products;
+  });
+});
