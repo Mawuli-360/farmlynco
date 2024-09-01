@@ -7,7 +7,7 @@ Farmlynco stands at the forefront of innovation, poised to revolutionize agricul
 ## Installation
 To test Farmlynco on your Android device, download the APK file attached to this repository and install it on your phone. Please note that Farmlynco is currently only compatible with Android phones, as we are still testing with local farmers.
 
-[Download APK]([https://drive.google.com/file/d/1NitkhcyO3tI_Xly3vX9r1wCdX2Jfgdqi/view?usp=sharing])
+[Download APK](https://drive.google.com/file/d/1NitkhcyO3tI_Xly3vX9r1wCdX2Jfgdqi/view?usp=sharing)
 
 ### NB: [Server link](https://github.com/Mawuli-360/newton_hackthon.git) leads to the server github
 
