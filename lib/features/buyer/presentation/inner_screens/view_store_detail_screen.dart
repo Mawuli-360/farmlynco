@@ -71,8 +71,8 @@ class _ViewStoreContent extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        const CustomText(
-                          body: "Daniel Stores",
+                        CustomText(
+                          body: productModel.storeName,
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                           color: AppColors.headerTitleColor,

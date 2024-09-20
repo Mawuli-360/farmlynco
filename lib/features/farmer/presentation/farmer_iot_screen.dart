@@ -1,3 +1,4 @@
+import 'package:farmlynco/features/farmer/presentation/weather/provider/weather_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,6 +14,8 @@ class FarmerIotScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final sensorDataAsyncValue = ref.watch(sensorDataStreamProvider);
+
     return Scaffold(
       appBar: CustomAppBar(
         title: "IoT Monitor",
@@ -33,11 +36,12 @@ class FarmerIotScreen extends ConsumerWidget {
               Container(
                 height: 135.h,
                 decoration: BoxDecoration(
-                    color: AppColors.headerTitleColor,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20.h),
-                      bottomRight: Radius.circular(20.h),
-                    )),
+                  color: AppColors.headerTitleColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20.h),
+                    bottomRight: Radius.circular(20.h),
+                  ),
+                ),
                 child: Row(
                   children: [
                     10.horizontalSpace,
@@ -58,37 +62,48 @@ class FarmerIotScreen extends ConsumerWidget {
                 ),
               ),
               90.verticalSpace,
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IoTCard(
-                    readings: '29',
-                    symbol: '°C',
-                    name: 'Temperature',
-                    image: AppImages.thermometer,
-                  ),
-                  IoTCard(
-                      readings: "80",
-                      symbol: "%",
-                      name: "Humidity",
-                      image: AppImages.moist),
-                ],
-              ),
-              20.verticalSpace,
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IoTCard(
-                      readings: "5.0",
-                      symbol: "m/s",
-                      name: "Wind Speed",
-                      image: AppImages.windPower),
-                  IoTCard(
-                      readings: "1013.25",
-                      symbol: "hPa",
-                      name: "Pressure",
-                      image: AppImages.pressure)
-                ],
+              sensorDataAsyncValue.when(
+                data: (sensorData) => Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        IoTCard(
+                          readings: sensorData['temperature'] ?? '---',
+                          symbol: '°C',
+                          name: 'Temperature',
+                          image: AppImages.thermometer,
+                        ),
+                        IoTCard(
+                          readings: sensorData['humidity'] ?? '---',
+                          symbol: "%",
+                          name: "Humidity",
+                          image: AppImages.moist,
+                        ),
+                      ],
+                    ),
+                    20.verticalSpace,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        IoTCard(
+                          readings: sensorData['windspeed'] ?? '---',
+                          symbol: "m/s",
+                          name: "Wind Speed",
+                          image: AppImages.windPower,
+                        ),
+                        IoTCard(
+                          readings: sensorData['pressure'] ?? '---',
+                          symbol: "hPa",
+                          name: "Pressure",
+                          image: AppImages.pressure,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                loading: () => const CircularProgressIndicator(),
+                error: (error, stack) => Text('Error: $error'),
               ),
             ],
           ),

@@ -146,14 +146,7 @@ class _RegistrationSectionState extends ConsumerState<_RegistrationSection> {
         'role': "Farmer",
         'storeName': storeName,
         'imageUrl': imageUrl,
-        'isApproved': false,
-        // 'storeDetails': {
-        //   'identityNumber': widget.formData.identityNumber,
-        //   'identityType': widget.formData.identityType,
-        //   'description': widget.formData.storeDescription,
-        //   'farmLocation': widget.formData.storeLocation,
-        //   'productCategory': widget.formData.selectedCategories
-        // }
+        // 'isApproved': false,
       };
 
       await firestore.collection('users').doc(user.uid).set(userRecord);

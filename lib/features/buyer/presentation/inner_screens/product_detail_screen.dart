@@ -6,6 +6,8 @@ import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/shared/common_widgets/primary_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:farmlynco/util/loading_overlay.dart';
+import 'package:farmlynco/util/show_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -13,13 +15,18 @@ import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ProductDetailScreen extends StatelessWidget {
+class ProductDetailScreen extends StatefulWidget {
   final bool isViewStore;
   final ProductModel product;
 
   const ProductDetailScreen(
       {super.key, required this.isViewStore, required this.product});
 
+  @override
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Future<void> _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(
       scheme: 'tel',
@@ -40,15 +47,30 @@ class ProductDetailScreen extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () async {
-                final chatService = ChatService();
-                final chatRoomID = await chatService
-                    .initiateChatWithProductOwner(product.productOwner);
-                Navigation.navigatePush(
-                  ChatPage(
-                    chatRoomID: chatRoomID,
-                    receiverName: product.productOwner,
-                  ),
-                );
+               
+               final LoadingOverlay loadingOverlay = LoadingOverlay();
+
+                loadingOverlay.show(context);
+
+                try {
+                  final chatService = ChatService();
+                  final chatRoomID =
+                      await chatService.initiateChatWithProductOwner(
+                          widget.product.productOwner);
+
+                 loadingOverlay.hide();
+
+                  // Use a microtask to ensure the overlay is removed before navigation
+                  await Future.microtask(() => Navigation.navigatePush(
+                        ChatPage(
+                          chatRoomID: chatRoomID,
+                          receiverName: widget.product.productOwner,
+                        ),
+                      ));
+                } catch (e) {
+                 loadingOverlay.hide();
+                  showToast("Failed to initialize chat. Please try again.");
+                }
               },
               child: Container(
                 width: 180.w,
@@ -79,7 +101,7 @@ class ProductDetailScreen extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                _makePhoneCall(product.userPhoneNumber);
+                _makePhoneCall(widget.product.userPhoneNumber);
               },
               child: Container(
                 width: 180.w,
@@ -130,7 +152,7 @@ class ProductDetailScreen extends StatelessWidget {
                               image: DecorationImage(
                             fit: BoxFit.cover,
                             image: CachedNetworkImageProvider(
-                              product.productImage,
+                              widget.product.productImage,
                             ),
                           )),
                         ),
@@ -166,7 +188,7 @@ class ProductDetailScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CustomText(
-                              body: product.name,
+                              body: widget.product.name,
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                               color: AppColors.headerTitleColor,
@@ -179,7 +201,7 @@ class ProductDetailScreen extends StatelessWidget {
                                       side:
                                           BorderSide(color: AppColors.green))),
                               child: const CustomText(
-                                  body: "Out of stock", fontSize: 14),
+                                  body: "In stock", fontSize: 14),
                             )
                           ],
                         ),
@@ -189,8 +211,8 @@ class ProductDetailScreen extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                const CustomText(
-                                  body: "Daniel store",
+                                CustomText(
+                                  body: widget.product.storeName,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                   color: AppColors.headerTitleColor,
@@ -204,7 +226,7 @@ class ProductDetailScreen extends StatelessWidget {
                               ],
                             ),
                             CustomText(
-                              body: "GHC ${product.price}.00",
+                              body: "GHC ${widget.product.price}.00",
                               fontSize: 17,
                               fontWeight: FontWeight.w500,
                             ),
@@ -215,15 +237,15 @@ class ProductDetailScreen extends StatelessWidget {
                         Container(
                           padding: EdgeInsets.all(8.r),
                           child: CustomText(
-                            body: product.description,
+                            body: widget.product.description,
                             fontSize: 14,
                           ),
                         ),
                         18.verticalSpace,
-                        if (isViewStore == true)
+                        if (widget.isViewStore == true)
                           PrimaryButton(
                             onTap: () => Navigation.navigatePush(
-                                ViewStoreDetailScreen(product)),
+                                ViewStoreDetailScreen(widget.product)),
                             text: "View store",
                             color: Colors.transparent,
                             useStadiumBorder: false,
@@ -244,7 +266,7 @@ class ProductDetailScreen extends StatelessWidget {
                           color: AppColors.headerTitleColor,
                         ),
                         10.verticalSpace,
-                        _SellerInfoCard(product),
+                        _SellerInfoCard(widget.product),
                         20.verticalSpace
                       ],
                     ),

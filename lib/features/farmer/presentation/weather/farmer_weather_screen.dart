@@ -2,9 +2,7 @@ import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/core/constant/app_images.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/recommendation_card.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/spray_advice_card.dart';
-import 'package:farmlynco/helper/extensions/language_extension.dart';
 import 'package:farmlynco/main.dart';
-import 'package:farmlynco/shared/common_widgets/common_provider/language_provider.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +59,6 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
 
   @override
   Widget build(BuildContext context) {
-    final targetLanguage = ref.watch(currentLanguage);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -131,16 +128,16 @@ class _FarmerWeatherScreenState extends ConsumerState<FarmerWeatherScreen>
                   height: 60.h,
                 ),
                 10.horizontalSpace,
-                Column(
+                const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    "Device Location".translate(
-                      targetLanguage,
+                    CustomText(
+                      body: "Device Location",
                       color: AppColors.white,
                       fontSize: 24,
                       fontWeight: FontWeight.w500,
                     ),
-                    const CustomText(
+                    CustomText(
                       body: "Tarkwa Nsuaem",
                       color: AppColors.white,
                       fontSize: 20,

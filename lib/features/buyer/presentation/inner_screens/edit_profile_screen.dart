@@ -1,8 +1,10 @@
+
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/shared/common_widgets/app_form_field.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/primary_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:farmlynco/util/custom_loading_scale.dart';
 import 'package:farmlynco/util/show_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,12 +20,14 @@ class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
-   ConsumerState<ConsumerStatefulWidget>  createState() => _EditProfileScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final TextEditingController _fullnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  bool isUpdatingProfile = false;
   File? _imageFile;
   String? _imageUrl;
 
@@ -50,6 +54,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Future<void> _updateProfile() async {
     final user = FirebaseAuth.instance.currentUser;
+    setState(() {
+      isUpdatingProfile = true;
+    });
     if (user != null) {
       String? imageUrl = _imageUrl;
       if (_imageFile != null) {
@@ -76,6 +83,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       }
 
       showToast('Profile updated successfully');
+      setState(() {
+        isUpdatingProfile = false;
+      });
     }
   }
 
@@ -191,11 +201,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         controller: _emailController,
                       ),
                       50.verticalSpace,
-                      PrimaryButton(
-                        onTap: _updateProfile,
-                        text: "Save edit",
-                        textColor: Colors.white,
-                      ),
+                      isUpdatingProfile
+                          ? const CustomLoadingScale()
+                          : PrimaryButton(
+                              onTap: _updateProfile,
+                              text: "Save edit",
+                              textColor: Colors.white,
+                            ),
                     ],
                   ),
                 ),

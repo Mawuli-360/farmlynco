@@ -24,17 +24,6 @@ class FarmAddScreen extends ConsumerStatefulWidget {
 
 class _FarmAddScreenState extends ConsumerState<FarmAddScreen> {
   File? _imageFile;
-  String? _selectedCategory;
-  final List<String> _categories = [
-    "Vegetables",
-    "Oil",
-    "Tubers",
-    "Fruits",
-    "Legumes",
-    "Grains",
-    "Spices",
-    "Poultry/Meat",
-  ];
 
   Future<void> _pickImage(BuildContext context) async {
     final imageSource = await showDialog<ImageSource>(
@@ -66,7 +55,7 @@ class _FarmAddScreenState extends ConsumerState<FarmAddScreen> {
   }
 
   Future<void> _uploadProduct() async {
-    if (_imageFile == null || _selectedCategory == null) return;
+    if (_imageFile == null) return;
 
     ref.read(isAddingProduct.notifier).state = true;
 
@@ -88,12 +77,12 @@ class _FarmAddScreenState extends ConsumerState<FarmAddScreen> {
         'name': productNameController.text,
         'description': descriptionController.text,
         'price': priceController.text,
-        'category': _selectedCategory!.toLowerCase(),
         'userId': '${FirebaseAuth.instance.currentUser?.uid}',
         'userPhoneNumber': '${userDoc.data()!['phoneNumber']}',
         'profilePic': '${userDoc.data()!['imageUrl']}',
         'productOwner': '${userDoc.data()!['email']}',
         'productImage': imageUrl,
+        'storeName': '${userDoc.data()!['storeName']}'
       };
 
       DocumentReference docRef = await FirebaseFirestore.instance
@@ -255,7 +244,6 @@ class _FarmAddScreenState extends ConsumerState<FarmAddScreen> {
                     ),
                   ),
                   18.verticalSpace,
-                  _buildCategoryDropdown(),
                   18.verticalSpace,
                   Row(
                     mainAxisSize: MainAxisSize.max,
@@ -338,31 +326,6 @@ class _FarmAddScreenState extends ConsumerState<FarmAddScreen> {
                   ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildCategoryDropdown() {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
-      child: DropdownButtonFormField<String>(
-        decoration: const InputDecoration(
-          labelText: 'Category',
-          border: OutlineInputBorder(),
-        ),
-        value: _selectedCategory,
-        items: _categories.map((String category) {
-          return DropdownMenuItem<String>(
-            value: category,
-            child: Text(category),
-          );
-        }).toList(),
-        onChanged: (String? newValue) {
-          setState(() {
-            _selectedCategory = newValue;
-          });
-        },
-        validator: (value) => value == null ? 'Please select a category' : null,
       ),
     );
   }

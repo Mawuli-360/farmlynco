@@ -45,7 +45,7 @@ class SellerScreen extends ConsumerWidget {
                           colorFilter: ColorFilter.mode(
                               Color.fromARGB(90, 0, 0, 0), BlendMode.darken),
                           fit: BoxFit.cover,
-                          image: AppImages.sellerBg)),
+                          image: AppImages.ricehead)),
                 ),
               ),
               _SellerInfoCard(user),

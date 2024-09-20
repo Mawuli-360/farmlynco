@@ -96,7 +96,6 @@ class CropDiagnosisNotifier extends StateNotifier<List<Diagnosis>> {
     _cancelCompleter = Completer<void>();
     
     try {
-      // Use the _uploadImage function here, passing _cancelCompleter
       String diagnosis = await _uploadImage(imagePath, _cancelCompleter!);
       return diagnosis;
     } finally {

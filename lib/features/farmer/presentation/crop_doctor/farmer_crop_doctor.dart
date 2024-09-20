@@ -10,6 +10,7 @@ import 'package:farmlynco/route/navigation.dart';
 import 'package:farmlynco/shared/common_widgets/custom_appbar.dart';
 import 'package:farmlynco/shared/common_widgets/custom_text.dart';
 import 'package:farmlynco/shared/common_widgets/primary_button.dart';
+import 'package:farmlynco/util/format_markdown.dart';
 import 'package:farmlynco/util/loading_overlay.dart';
 import 'package:farmlynco/util/show_toast.dart';
 import 'package:flutter/material.dart';
@@ -138,17 +139,11 @@ class FarmerCropDoctor extends ConsumerWidget {
     }
   }
 
-  String formatDiagnosisAsMarkdown(String rawDiagnosis) {
-    return '''
-$rawDiagnosis
-''';
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PopScope(
-      onPopInvoked: (didPop){
-          ref.read(cropDiagnosisProvider.notifier).cancelOngoingRequest();
+      onPopInvoked: (didPop) {
+        ref.read(cropDiagnosisProvider.notifier).cancelOngoingRequest();
       },
       child: Scaffold(
           appBar: CustomAppBar(

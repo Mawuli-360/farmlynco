@@ -37,56 +37,47 @@ class AuthRepository {
   User? get currentUser => _auth.currentUser;
 
   Future<void> handleAuthentication(
-      String selectedRole, BuildContext context,String email, String password) async {
-    try {
-      bool isAuthSuccessful = await authenticateUser(selectedRole, _ref,email,password);
+    String selectedRole, BuildContext context, String email, String password) async {
+  try {
+    bool isAuthSuccessful = await authenticateUser(selectedRole, _ref, email, password);
 
-      if (isAuthSuccessful) {
-        if (currentUser != null && currentUser!.emailVerified) {
-          // User is authenticated and the selected role matches
-          String uid = currentUser!.uid;
-          DocumentSnapshot userSnapshot =
-              await _firebaseFirestore.collection('users').doc(uid).get();
+    if (isAuthSuccessful) {
+      if (currentUser != null && currentUser!.emailVerified) {
+        // User is authenticated and the selected role matches
+        String uid = currentUser!.uid;
+        DocumentSnapshot userSnapshot =
+            await _firebaseFirestore.collection('users').doc(uid).get();
 
-          if (userSnapshot.exists) {
-            Map<String, dynamic> userData =
-                userSnapshot.data() as Map<String, dynamic>;
-            String role = userData['role'];
-            bool isApproved =
-                userData['isApproved'] ?? false; // Default to false if not set
+        if (userSnapshot.exists) {
+          Map<String, dynamic> userData =
+              userSnapshot.data() as Map<String, dynamic>;
+          String role = userData['role'];
 
-            if (isApproved) {
-              // User is approved, navigate to appropriate screen
-              if (role == 'Buyer') {
-                Navigation.navigateReplace(Navigation.buyerLandingScreen);
-              } else if (role == 'Farmer') {
-                Navigation.navigateReplace(Navigation.farmerMainScreen);
-              }
-            } else {
-              // User is not approved, navigate to waiting screen
-              Navigation.navigateReplace(
-                  Navigation.waitingScreen); // You need to define this route
-            }
-          } else {
-            // User document not found in Firestore
-            showToast('User document not found');
+          // User is authenticated, navigate to appropriate screen
+          if (role == 'Buyer') {
+            Navigation.navigateReplace(Navigation.buyerLandingScreen);
+          } else if (role == 'Farmer') {
+            Navigation.navigateReplace(Navigation.farmerMainScreen);
           }
-        } else if (currentUser != null && !currentUser!.emailVerified) {
-          Navigation.navigateReplacement(
-              EmailVerificationScreen(currentUser!, _auth));
         } else {
-          // User is not authenticated or the selected role doesn't match
-          showToast('Authentication this failed');
+          // User document not found in Firestore
+          showToast('User document not found');
         }
+      } else if (currentUser != null && !currentUser!.emailVerified) {
+        Navigation.navigateReplacement(
+            EmailVerificationScreen(currentUser!, _auth));
       } else {
-        // Authentication failed
-        showToast('Authentication here failed');
+        // User is not authenticated or the selected role doesn't match
+        showToast('Authentication failed');
       }
-    } catch (e) {
-      // print("Exception in handleAuthentication: $e"); // Add this line
-      showToast('Authentication error: $e');
+    } else {
+      // Authentication failed
+      showToast('Authentication failed');
     }
+  } catch (e) {
+    showToast('Authentication error: $e');
   }
+}
 
   Future<bool> authenticateUser(
       String selectedRole, Ref ref, String email, String password) async {

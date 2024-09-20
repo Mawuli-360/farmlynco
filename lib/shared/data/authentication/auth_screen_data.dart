@@ -6,8 +6,8 @@ class AuthScreenData {
 
   static List<RegistrationOptionData> registrationOptions = [
     RegistrationOptionData(
-        title: "Sell Foodstuff", image: AppImages.marketplace),
-    RegistrationOptionData(title: "Buy Foodstuff", image: AppImages.onlineShop),
+        title: "Sell Rice", image: AppImages.marketplace),
+    RegistrationOptionData(title: "Buy Rice", image: AppImages.onlineShop),
   ];
 }
 

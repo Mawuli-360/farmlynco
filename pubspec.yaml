@@ -80,6 +80,7 @@ dependencies:
   translator: ^1.0.0
   url_launcher: ^6.3.0
   firebase_messaging: ^15.0.4
+  firebase_database: ^11.1.2
 
 dev_dependencies:
   build_runner: ^2.4.9

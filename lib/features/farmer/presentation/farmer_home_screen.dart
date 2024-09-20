@@ -1,7 +1,7 @@
 import 'package:farmlynco/core/constant/app_colors.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/farmer_weather_card.dart';
 import 'package:farmlynco/features/farmer/presentation/farmer_widgets/section_with_horizontal_tile.dart';
-import 'package:farmlynco/features/farmer/presentation/farmer_widgets/tip_section.dart';
+import 'package:farmlynco/features/farmer/presentation/farmers_providers/currentpage_provider.dart';
 import 'package:farmlynco/features/farmer/presentation/farmers_providers/fetch_diseases_provider.dart';
 import 'package:farmlynco/helper/extensions/language_extension.dart';
 import 'package:farmlynco/main.dart';
@@ -14,6 +14,7 @@ import 'package:farmlynco/shared/common_widgets/header_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 
 class FarmerHomeScreen extends ConsumerWidget {
   const FarmerHomeScreen({super.key});
@@ -23,6 +24,7 @@ class FarmerHomeScreen extends ConsumerWidget {
     final user = ref.watch(userDetailsProvider);
     final fetchNews = ref.watch(fetchNewsDetailProvider);
     final diseases = ref.watch(fetchDiseasesDetailProvider);
+    final currentPage = ref.read(currentPageProvider.notifier);
 
     return Scaffold(
       body: CustomScrollView(
@@ -122,7 +124,33 @@ class FarmerHomeScreen extends ConsumerWidget {
                     loading: () => const Center(
                           child: CircularProgressIndicator(),
                         )),
-                const TipSection(),
+                GestureDetector(
+                  onTap: () {
+                    currentPage.setPage(3);
+                  },
+                  child: SizedBox(
+                    height: 75.h,
+                    // width: 10.h,
+                    child: Row(
+                      children: [
+                        60.horizontalSpace,
+                        LottieBuilder.asset(
+                          "assets/animations/storeanim.json",
+                          height: 75.h,
+                          fit: BoxFit.cover,
+                        ),
+                        10.horizontalSpace,
+                        const CustomText(body: "View Marketplace"),
+                        5.horizontalSpace,
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: AppColors.headerTitleColor,
+                          size: 19.h,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 10),
                 HeaderTitle(
                   title: "Trending Disease",
@@ -148,7 +176,6 @@ class FarmerHomeScreen extends ConsumerWidget {
                     loading: () => const Center(
                           child: CircularProgressIndicator(),
                         )),
-             
                 40.verticalSpace,
               ],
             ),

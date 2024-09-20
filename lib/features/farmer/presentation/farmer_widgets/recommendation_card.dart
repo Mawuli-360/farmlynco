@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class RecommendationCard extends ConsumerStatefulWidget {
+class RecommendationCard extends ConsumerWidget {
   const RecommendationCard({
     super.key,
     required this.title,
@@ -18,34 +18,15 @@ class RecommendationCard extends ConsumerStatefulWidget {
   final String title;
 
   @override
-  ConsumerState<RecommendationCard> createState() => _RecommendationCardState();
-}
-
-class _RecommendationCardState extends ConsumerState<RecommendationCard> {
-  void _retryFetchInsights() {
-    final sensorData = ref.read(sensorDataStreamProvider).value;
-    if (sensorData != null) {
-      ref.read(weatherInsightsProvider.notifier).fetchInsights(sensorData);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    ref.listen<AsyncValue<Map<String, String>>>(
-      sensorDataStreamProvider,
-      (_, next) => next.whenData((sensorData) {
-        ref.read(weatherInsightsProvider.notifier).fetchInsights(sensorData);
-      }),
-    );
-
+  Widget build(BuildContext context, WidgetRef ref) {
     final weatherInsights = ref.watch(weatherInsightsProvider);
     final targetLanguage = ref.watch(currentLanguage);
 
     return GestureDetector(
       onTap: () {
-        weatherInsights.whenData((insights) {
-          showCustomBottomSheet(
-              context, insights.insights, "Weather Insights Result");
+        weatherInsights.whenData((cachedInsights) {
+          showCustomBottomSheet(context, cachedInsights.insights.insights,
+              "Weather Insights Result${cachedInsights.isOutdated ? ' (Outdated)' : ''}");
         });
       },
       child: Container(
@@ -69,45 +50,43 @@ class _RecommendationCardState extends ConsumerState<RecommendationCard> {
         child: Column(
           children: [
             CustomText(
-              body: widget.title,
+              body: title,
               color: AppColors.headerTitleColor,
               fontWeight: FontWeight.w500,
               fontSize: 18,
             ),
             9.verticalSpace,
             weatherInsights.when(
-              data: (insights) {
-                return insights.insights.translate(
-                  targetLanguage,
-                  fontSize: 15,
-                  maxLines: 3,
-                  textOverflow: TextOverflow.ellipsis,
+              data: (cachedInsights) {
+                return Column(
+                  children: [
+                    cachedInsights.insights.insights.translate(
+                      targetLanguage,
+                      fontSize: 15,
+                      maxLines: 3,
+                      textOverflow: TextOverflow.ellipsis,
+                    ),
+                    if (cachedInsights.isOutdated)
+                      const CustomText(
+                        body: "Updating...",
+                        fontSize: 12,
+                        color: Colors.orange,
+                      ),
+                  ],
                 );
               },
               loading: () => const CustomLoadingScale(),
               error: (error, _) => Column(
                 children: [
-                  CustomText(
-                    body: error.toString(),
+                  const CustomText(
+                    body: "Unable to fetch new insights. Retrying...",
                     fontSize: 14,
                     maxLines: 2,
                     textOverflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                   ),
                   10.verticalSpace,
-                  ElevatedButton(
-                    onPressed: _retryFetchInsights,
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.headerTitleColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.h))),
-                    child: const CustomText(
-                      body: 'Retry',
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                  const CustomLoadingScale(),
                 ],
               ),
             ),

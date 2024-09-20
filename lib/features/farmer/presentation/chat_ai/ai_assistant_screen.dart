@@ -287,7 +287,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                       onTap: () async {
                         _textFieldFocusNode.unfocus();
                         FocusScope.of(context).requestFocus(FocusNode());
-                        chatNotifier.sendMessage(promptController.text);
+                        chatNotifier.sendMessage(promptController.text.trim());
                         promptController.clear();
                         (_AssistantScreenState state) =>
                             state._scrollToBottom();

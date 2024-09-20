@@ -1,5 +1,6 @@
 import 'package:farmlynco/core/extension/date_helper.dart';
 import 'package:farmlynco/features/farmer/domain/chat_domain/message_model.dart';
+import 'package:farmlynco/util/format_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/chat_data/chat_repository.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -99,9 +100,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
     groupMessages();
 
     final responseText = await chatRepository.fetchChatResponse(messageText);
+    final formattedText = formatDiagnosisAsMarkdown(responseText);
 
     Messages botMessage = Messages(
-      text: responseText,
+      text: formattedText,
       sender: Sender.bot,
       timestamp: DateTime.now(),
     );
@@ -133,9 +135,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
     final responseText =
         await chatRepository.fetchChatResponse(state.lastWords);
+    final formattedText = formatDiagnosisAsMarkdown(responseText);
 
     Messages botMessage = Messages(
-      text: responseText,
+      text: formattedText,
       sender: Sender.bot,
       timestamp: DateTime.now(),
     );

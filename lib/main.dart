@@ -15,11 +15,11 @@ void main() {
     runApp(
       const ProviderScope(
         child: Farmlynco(),
+        
       ),
     );
   }, (Object error, StackTrace stack) {
-    // print('Caught error: $error');
-    // print(stack);
+
   });
 }
 

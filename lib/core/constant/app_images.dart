@@ -32,6 +32,8 @@ class AppImages {
   static const plantDiagnostic =
       AssetImage("assets/images/plantDiagnostic.png");
   static const location = AssetImage("assets/images/location.png");
+    static const store = AssetImage("assets/images/store.png");
+
   static const pressure = AssetImage("assets/images/pressure.png");
   static const windPower = AssetImage("assets/images/wind-power.png");
   static const waiting = AssetImage("assets/images/waiting.png");
@@ -41,6 +43,8 @@ class AppImages {
   //-------------------------------------------------------------------------//
   static const AssetImage sentEmail =
       AssetImage('assets/images/sent_email.jpg');
+        static const AssetImage ricehead =
+      AssetImage('assets/images/ricehead.jpg');
   static const AssetImage sellerBg = AssetImage('assets/images/sell_bg.jpg');
   static const AssetImage happyCustomers =
       AssetImage('assets/images/happycustomers.jpg');

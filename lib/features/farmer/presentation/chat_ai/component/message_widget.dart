@@ -4,6 +4,8 @@ import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MessageWidget extends StatelessWidget {
   final Messages message;
@@ -30,13 +32,48 @@ class MessageWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                message.text,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: Colors.white,
+              if (message.sender == Sender.bot)
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.77,
+                  ),
+                  child: MarkdownBody(
+                    data: message.text,
+                    styleSheet: MarkdownStyleSheet(
+                      p: TextStyle(fontSize: 16.sp, color: Colors.white),
+                      h1: TextStyle(
+                          fontSize: 22.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                      h2: TextStyle(
+                          fontSize: 20.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                      h3: TextStyle(
+                          fontSize: 18.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                      code: TextStyle(
+                          backgroundColor: Colors.white.withOpacity(0.1),
+                          color: Colors.white),
+                      blockquote: const TextStyle(
+                          color: Colors.white70, fontStyle: FontStyle.italic),
+                    ),
+                    onTapLink: (text, href, title) {
+                      if (href != null) {
+                        launchUrl(Uri.parse(href));
+                      }
+                    },
+                  ),
+                )
+              else
+                Text(
+                  message.text,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
               SizedBox(height: 4.h),
               Text(
                 DateFormat('HH:mm').format(message.timestamp),

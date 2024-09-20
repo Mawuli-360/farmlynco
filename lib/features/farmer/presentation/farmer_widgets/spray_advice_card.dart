@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class SprayingAdviceCard extends ConsumerStatefulWidget {
+class SprayingAdviceCard extends ConsumerWidget {
   const SprayingAdviceCard({
     super.key,
     required this.title,
@@ -18,39 +18,15 @@ class SprayingAdviceCard extends ConsumerStatefulWidget {
   final String title;
 
   @override
-  ConsumerState<SprayingAdviceCard> createState() => _SprayingAdviceCardState();
-}
-
-class _SprayingAdviceCardState extends ConsumerState<SprayingAdviceCard> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void _retryFetchInsights() {
-    final sensorData = ref.read(sensorDataStreamProvider).value;
-    if (sensorData != null) {
-      ref.read(sprayInsightsProvider.notifier).fetchSprayAdvice(sensorData);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    ref.listen<AsyncValue<Map<String, String>>>(
-      sensorDataStreamProvider,
-      (_, next) => next.whenData((sensorData) {
-        ref.read(sprayInsightsProvider.notifier).fetchSprayAdvice(sensorData);
-      }),
-    );
-
+  Widget build(BuildContext context, WidgetRef ref) {
     final sprayInsights = ref.watch(sprayInsightsProvider);
     final targetLanguage = ref.watch(currentLanguage);
 
     return GestureDetector(
       onTap: () {
-        sprayInsights.whenData((insights) {
-          showCustomBottomSheet(
-              context, insights.insights, "Spraying Insights Result");
+        sprayInsights.whenData((cachedInsights) {
+          showCustomBottomSheet(context, cachedInsights.insights.insights,
+              "Spraying Insights Result${cachedInsights.isOutdated ? ' (Outdated)' : ''}");
         });
       },
       child: Container(
@@ -74,45 +50,45 @@ class _SprayingAdviceCardState extends ConsumerState<SprayingAdviceCard> {
         child: Column(
           children: [
             CustomText(
-              body: widget.title,
+              body: title,
               color: AppColors.headerTitleColor,
               fontWeight: FontWeight.w500,
               fontSize: 18,
             ),
             9.verticalSpace,
             sprayInsights.when(
-              data: (insights) {
-                return insights.insights.translate(
-                  targetLanguage,
-                  fontSize: 15,
-                  maxLines: 3,
-                  textOverflow: TextOverflow.ellipsis,
+              data: (cachedInsights) {
+            
+
+                return Column(
+                  children: [
+                    cachedInsights.insights.insights.translate(
+                      targetLanguage,
+                      fontSize: 15,
+                      maxLines: 3,
+                      textOverflow: TextOverflow.ellipsis,
+                    ),
+                    if (cachedInsights.isOutdated)
+                      const CustomText(
+                        body: "Updating...",
+                        fontSize: 12,
+                        color: Colors.orange,
+                      ),
+                  ],
                 );
               },
               loading: () => const CustomLoadingScale(),
               error: (error, _) => Column(
                 children: [
-                  CustomText(
-                    body: error.toString(),
+                  const CustomText(
+                    body: "Unable to fetch new insights. Retrying...",
                     fontSize: 14,
                     maxLines: 2,
                     textOverflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                   ),
                   10.verticalSpace,
-                  ElevatedButton(
-                    onPressed: _retryFetchInsights,
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.headerTitleColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.h))),
-                    child: const CustomText(
-                      body: 'Retry',
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                  const CustomLoadingScale(),
                 ],
               ),
             ),

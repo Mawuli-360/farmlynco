@@ -11,7 +11,7 @@ class ProductModel {
   final String productImage;
   final String productOwner;
   final String profilePic;
-
+  final String storeName;
   final String userId;
   final String userPhoneNumber;
   bool isBookmarked;
@@ -26,6 +26,7 @@ class ProductModel {
       required this.productImage,
       required this.productOwner,
       required this.profilePic,
+      required this.storeName,
       required this.userId,
       required this.userPhoneNumber,
       this.isBookmarked = false});
@@ -44,6 +45,7 @@ class ProductModel {
       String? productImage,
       String? productOwner,
       String? profilePic,
+      String? storeName,
       String? userId,
       String? userPhoneNumber,
       required bool isBookmarked}) {
@@ -56,6 +58,7 @@ class ProductModel {
       productImage: productImage ?? this.productImage,
       productOwner: productOwner ?? this.productOwner,
       profilePic: profilePic ?? this.profilePic,
+      storeName: storeName ?? this.storeName,
       userId: userId ?? this.userId,
       userPhoneNumber: userPhoneNumber ?? this.userPhoneNumber,
     );
@@ -84,6 +87,7 @@ class ProductModel {
       productImage: map['productImage'] as String,
       productOwner: map['productOwner'] as String,
       profilePic: map['profilePic'] as String,
+      storeName: map['storeName'] as String,
       userId: map['userId'] as String,
       userPhoneNumber: map['userPhoneNumber'] as String,
     );
